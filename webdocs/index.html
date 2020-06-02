@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LavaJS</title>
+
+    <!--Meta information-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="description"
+      content="Dynamic Lavalink wrapper for your discord bot"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <!--Links-->
+    <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.materialdesignicons.com/5.3.45/css/materialdesignicons.min.css"
+    />
+
+    <!--CSS Code-->
+    <style>
+      /**
+      * Title
+      */
+      .cover-main h1 a span {
+        color: #7289da;
+      }
+
+      /**
+       * Version Number
+       */
+      .cover-main h1 a span small {
+        color: #7289da;
+      }
+
+      /**
+      * Description
+      */
+      .cover-main h3 a span {
+        color: #99aab5;
+      }
+
+      /*
+      * Buttons
+      */
+      .cover-main p a {
+        background: #42b983 !important;
+        color: #2c2f33 !important;
+      }
+      .cover-main p a:hover {
+        letter-spacing: 2px !important;
+        opacity: 0.6 !important;
+      }
+
+      /*
+      * Logo
+      */
+      .cover-main p img {
+        margin-bottom: -1.5rem;
+      }
+
+      /*
+      * Sidebar
+      */
+      .sidebar {
+        background: #2c2f33 !important;
+        color: #42b983 !important;
+      }
+      .sidebar .app-name-link {
+        color: #7289da !important;
+        font-size: 30px !important;
+      }
+      .sidebar a {
+        caret-color: #99aab5 !important;
+        color: #99aab5 !important;
+      }
+      .sidebar-toggle {
+        background: transparent !important;
+        color: white !important;
+      }
+      .sidebar-toggle-button span {
+        background: #99aab5 !important;
+      }
+
+      /*
+      * Buttons
+      */
+      .docsify-copy-code-button {
+        margin-top: 8px !important;
+        margin-right: 15px !important;
+        background: transparent !important;
+      }
+      .docsify-copy-code-button .label {
+        font-size: 25px !important;
+        color: #42b983 !important;
+      }
+
+      a {
+        text-decoration: none !important;
+      }
+
+      /*
+      * Code blocks
+      */
+      pre {
+        background: #2c2f33 !important;
+        border-radius: 10px;
+      }
+      pre code {
+        color: white !important;
+        background: #2c2f33 !important;
+      }
+      .string,
+      .punctuation {
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        name: "LavaJS",
+        repo: "https://github.com/ThatAnonymousGuy/LavaJS",
+        basePath: "/components/",
+        loadSidebar: true,
+        subMaxLevel: 3,
+        loadNavbar: true,
+        onlyCover: true,
+        coverpage: true,
+        themeColor: "#2c2f33",
+        notFoundPage: true,
+      };
+    </script>
+    <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js"></script>
+    <script src="copy.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/external-script.min.js"></script>
+    <script>
+      const obj = document.querySelectorAll("button");
+      console.log(obj);
+    </script>
+  </body>
+</html>

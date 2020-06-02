@@ -1,0 +1,32 @@
+{
+  "name": "lavajs",
+  "version": "1.0.0",
+  "description": "Dynamic Lavalink wrapper for your discord bot",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThatAnonymousGuy/LavaJS.git"
+  },
+  "keywords": [
+    "Lavalink",
+    "DiscordJS",
+    "Discord",
+    "Music",
+    "LavaJS",
+    "MusicBot"
+  ],
+  "author": "ThatAnonymousG",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThatAnonymousGuy/LavaJS/issues"
+  },
+  "homepage": "https://github.com/ThatAnonymousGuy/LavaJS#readme",
+  "dependencies": {
+    "events": "^3.1.0",
+    "node-fetch": "^2.6.0",
+    "ws": "^7.3.0"
+  },
+  "devDependencies": {
+    "discord.js": "^12.2.0"
+  }
+}
