@@ -4,3 +4,6 @@ bot.js
 # NPM trash
 package-lock.json
 node_modules/
+
+# Docs
+webdocs/
