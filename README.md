@@ -5,7 +5,7 @@
   </p>
   <br />
   <p>
-    <a href="https://discord.gg/mHHU8vs"><img src="https://img.shields.io/discord/718157763821174884" alt="Discord" /></a>
+    <a href="https://discord.gg/mHHU8vs"><img src="https://discordapp.com/api/guilds/718157763821174884/widget.png?style=shield" alt="Discord" /></a>
     <a href="https://github.com/ThatAnonymousG/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/lavajs" alt="License" /></a>
     <a href=""><img src="https://img.shields.io/npm/dt/lavajs" alt="Downloads" /></a>
     <img src="https://img.shields.io/david/ThatAnonymousG/LavaJS" alt="Dependencies" />
