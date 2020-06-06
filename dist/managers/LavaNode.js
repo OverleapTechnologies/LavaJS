@@ -8,9 +8,19 @@ class LavaNode {
    */
   constructor(lavaJS, options) {
     this.lavaJS = lavaJS;
+
+    /**
+     * The options for the node
+     * @type {NodeOptions}
+     * @readonly
+     */
     this.options = options;
 
-    // The node stats
+    /**
+     * The node system stats
+     * @type {Object}
+     * @private
+     */
     this.stats = {
       playingPlayers: 0,
       memory: {
@@ -29,26 +39,45 @@ class LavaNode {
     };
 
     /**
-     * The node connection status
-     * @type {{doRetry: Number, calls: Number, attempts: Number}}
+     * Connection stats
+     * @type {Object}
+     * @private
      */
     this.conStatus = {
       attempts: 0,
       doRetry: 5,
-      calls: 0,
     };
 
     // Establish a WebSocket connection
     this.connect();
   }
 
-  // The node connection status
+  /**
+   * The node's system usage status
+   * @return {Object}
+   * @readonly
+   */
+  get systemStats() {
+    return {
+      memory: this.stats.memory,
+      cpu: this.stats.cpu,
+      uptime: this.stats.uptime,
+    };
+  }
+
+  /**
+   * The node's connection status
+   * @return {Boolean}
+   * @readonly
+   */
   get online() {
     if (!this.con) return false;
     return this.con.readyState === WebSocket.OPEN;
   }
 
-  // Connect to a node
+  /**
+   * Establish a node websocket connection
+   */
   connect() {
     const headers = {
       Authorization: this.options.password,
@@ -66,13 +95,18 @@ class LavaNode {
     this.con.on("message", this.handleResponse.bind(this));
   }
 
-  // Handles successful connections
+  /**
+   * Handles successful connections
+   */
   onConnect() {
     if (this.reconnectModule) clearTimeout(this.reconnectModule);
     this.lavaJS.emit("nodeSuccess", this);
   }
 
-  // Handles closed connections
+  /**
+   * Handles close connection events
+   * @param {Number} code - The error code
+   */
   onClose(code) {
     this.lavaJS.emit(
       "nodeClose",
@@ -82,14 +116,19 @@ class LavaNode {
     if (code !== 1000) this.reconnect();
   }
 
-  // Handles connection errors
+  /**
+   * Handles connection errors
+   * @param {String} error - The error message
+   */
   onError(error) {
     if (!error) return;
     this.lavaJS.emit("nodeError", this, error);
     this.reconnect();
   }
 
-  // Reconnects the node if something goes wrong
+  /**
+   * Reconnect to the node if disconnected
+   */
   reconnect() {
     this.reconnectModule = setTimeout(() => {
       if (this.conStatus.attempts >= this.conStatus.doRetry) {
@@ -110,15 +149,20 @@ class LavaNode {
     }, 3e4);
   }
 
-  // Kills the node
+  /**
+   * Destroys the node
+   */
   kill() {
     if (!this.online) return;
     this.con.close(1000, "destroy");
     this.con.removeEventListener();
     this.con = null;
+    this.lavaJS.nodeCollection.delete(this.options.host);
   }
 
-  // Handle any incoming data
+  /**
+   * Handle any incoming data from the node
+   */
   handleResponse(data) {
     const msg = JSON.parse(data.toString());
     const { op, type, code, guildId, state } = msg;
@@ -141,13 +185,37 @@ class LavaNode {
       if (!guildId) return;
       // LavaJS player for that guild
       const player = this.lavaJS.playerCollection.get(guildId);
+      const track = player.queue[0];
+      player.playState = false;
 
       // Handle track event messages
       switch (type) {
         case "TrackEndEvent":
+          if (track && player.repeatTrack) {
+            player.play();
+          } else if (track && player.repeatQueue) {
+            const track1 = player.queue.remove();
+            if (track1) player.queue.add(track1);
+            player.play();
+          } else if (track && player.queue.size > 1) {
+            player.queue.remove();
+            player.play();
+          } else if (track && player.queue.size === 1) {
+            player.queue.remove();
+            this.lavaJS.emit("queueOver", player);
+          }
           break;
 
         case "TrackStuckEvent":
+          player.queue.remove();
+          if (player.skipOnError) player.play();
+          this.lavaJS.emit("trackStuck", track, player, msg);
+          break;
+
+        case "TrackExceptionEvent":
+          player.queue.remove();
+          if (player.skipOnError) player.play();
+          this.lavaJS.emit("trackError", track, player, msg);
           break;
 
         case "WebSocketClosedEvent":
@@ -156,9 +224,9 @@ class LavaNode {
               op: 4,
               d: {
                 guild_id: guildId,
-                channel_id: player.voiceChannel.id || player.voiceChannel,
+                channel_id: player.options.voiceChannel.id,
                 self_mute: false,
-                self_deaf: player.Deafen || false,
+                self_deaf: player.options.deafen || false,
               },
             });
           this.lavaJS.emit("socketClosed", this, msg);
@@ -172,6 +240,27 @@ class LavaNode {
         new Error(`Unknown error/event with op ${op} and data ${msg}!`)
       );
     }
+  }
+
+  /**
+   * Send data to the node's websocket
+   * @param {Object} data - The data packet
+   * @returns {Promise<Boolean>}
+   */
+  wsSend(data) {
+    new Promise((res, rej) => {
+      const formattedData = JSON.stringify(data);
+      if (!this.online) res(false);
+      if (!formattedData || !formattedData.startsWith("{"))
+        rej(`The data was not in the proper format.`);
+      this.con.send(
+        formattedData,
+        { compress: false, binary: false, fin: false, mask: false },
+        (err) => {
+          err ? rej(err) : res(true);
+        }
+      );
+    });
   }
 }
 
