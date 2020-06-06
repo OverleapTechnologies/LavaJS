@@ -1,10 +1,10 @@
-const { LavaClient } = require("./LavaClient");
-const {} = require("./utils/Utils");
-const { Player } = require("./managers/Player");
-const { LavaNode } = require("./managers/Node");
+const { newTrack, newPlaylist } = require("./utils/Utils");
 
 module.exports = {
-  LavaClient,
-  Player,
-  LavaNode,
+  LavaClient: require("./managers/LavaClient").LavaClient,
+  Player: require("./managers/Player").Player,
+  LavaNode: require("./managers/LavaNode").LavaNode,
+  Queue: require("./managers/Queue").Queue,
+  newTrack,
+  newPlaylist,
 };

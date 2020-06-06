@@ -1,6 +1,6 @@
 const { EventEmitter } = require("events");
-const { LavaNode } = require("./managers/Node");
-const { Player } = require("./managers/Player");
+const { LavaNode } = require("./LavaNode");
+const { Player } = require("./Player");
 
 class LavaClient extends EventEmitter {
   /**
@@ -48,23 +48,65 @@ class LavaClient extends EventEmitter {
    * @param {Player} player - Player which is playing the track.
    */
   /**
-   * Emitted when a track is stuck or errored out.
-   * @event LavaClient#trackIssue
-   * @param {Track} track - The track which has the issue.
+   * Emitted when a track is stuck
+   * @event LavaClient#trackStuck
+   * @param {Track} track - The track which is stuck.
    * @param {Player} player - Player which was playing the track.
    * @param {Error} error - The error message.
    */
+  /**
+   * Emitted when a track encounters an error
+   * @event LavaClient#trackError
+   * @param {Track} track - Track which encountered errored.
+   * @param {Player} player - Player which was playing the track.
+   * @param {Error} error - The error message.
+   */
+  /**
+   * Emitted when a queue ends
+   * @event LavaClient#queueOver
+   * @param {Player} player - Player whose queue ended.
+   */
 
   /**
+   * The playlist object
+   * @typedef {Object} Playlist
+   * @property {String} name - Name of playlist.
+   * @property {Number} trackCount - Number of tracks in the playlist.
+   * @property {Number} duration - Total duration of the playlist.
+   * @property {Array<Track>} tracks - The tracks in the playlist.
+   */
+  /**
+   * The track object
+   * @typedef {Object} Track
+   * @property {String} trackString - The 64-bit encoded track.
+   * @property {String} title - Title of the track.
+   * @property {String} identifier - The ID of the track.
+   * @property {String} author - The author of the track.
+   * @property {Number} length - The duration of the track.
+   * @property {Boolean} isStream - Whether to the track is a stream.
+   * @property {String} uri - Track's YouTube url.
+   * @property {*} user - The user who requested the track.
+   * @property {Object} thumbnail - Track's YouTube thumbnails.
+   */
+  /**
    * The options for the player
-   * @name PlayerOptions
-   * @type {{guild: Object, voiceChannel: Object, textChannel: Object, Deafen: Boolean}}
+   * @typedef {Object} PlayerOptions
+   * @property {*} guild - The guild where the player is connected to.
+   * @property {*} voiceChannel - The voice channel to connect to.
+   * @property {*} textChannel - The text channel where the player is connected to.
+   * @property {Boolean} [deafen=false] - Whether to deafen the client.
+   * @property {Boolean} [trackRepeat=false] - Whether to repeat the current track.
+   * @property {Boolean} [queueRepeat=false] - Whether to repeat the current queue.
+   * @property {Boolean} [skipOnError=true] - Whether to skip to next song on track stuck/error.
    */
   /**
    * The options for the node
-   * @name NodeOptions
-   * @type {{ host: String, port: Number, password: String }}
+   * @typedef {Object} NodeOptions
+   * @property {String} host - The host IP or localhost.
+   * @property {Number} port - The port of the node.
+   * @property {String} password - The authorization password of the node.
    */
+
   /**
    * Creates a new LavaJSClient class instance
    * @param {*} client - The Discord client.
@@ -78,7 +120,16 @@ class LavaClient extends EventEmitter {
     this.shards = shards || 1;
 
     // Collections
+    /**
+     * The node Map collection
+     * @type {Map}
+     */
     this.nodeCollection = new Map();
+
+    /**
+     * The player Map collection
+     * @type {Map}
+     */
     this.playerCollection = new Map();
 
     // Connect the nodes
@@ -90,16 +141,16 @@ class LavaClient extends EventEmitter {
       this.nodeCollection.set(x.host, newNode);
     }
   }
+
   /**
    * Send data to Discord via WebSocket.
-   * @param {*} data - The data packet to send.
+   * @param {Object} data - The data packet to send.
    */
   wsSend(data) {
     if (!this.client) return;
-
     const guild = this.client.guilds.get(data.d.guild_id);
     if (guild && this.client.ws.shards) {
-      guild.shard.send(data).catch();
+      guild.shard.send(data).catch((err) => throw new Error(err));
     } else if (guild) {
       this.client.ws.send(data);
     }
@@ -112,7 +163,30 @@ class LavaClient extends EventEmitter {
    * @return {Player} player - The new player.
    */
   spawnPlayer(lavaJS, options) {
-    return new Player(this, options);
+    if (!options.guild.id)
+      options.guild = this.client.guilds.cache.get(options.guild);
+    if (!options.guild)
+      throw new Error(
+        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.guild.`
+      );
+    if (!options.voiceChannel.id)
+      options.voiceChannel = options.guild.channels.cache.get(
+        options.voiceChannel
+      );
+    if (!options.voiceChannel)
+      throw new Error(
+        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.voiceChannel.`
+      );
+    if (!options.textChannel.id)
+      options.textChannel = options.guild.channels.cache.get(
+        options.textChannel
+      );
+    if (!options.textChannel)
+      throw new Error(
+        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.textChannel.`
+      );
+
+    return new Player(this, options, this.optimisedNode);
   }
 
   /**
