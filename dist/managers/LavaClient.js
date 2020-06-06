@@ -1,5 +1,5 @@
 const { EventEmitter } = require("events");
-const { LavaNode } = require("./managers/Node");
+const { LavaNode } = require("./managers/LavaNode");
 const { Player } = require("./managers/Player");
 
 class LavaClient extends EventEmitter {
@@ -58,7 +58,14 @@ class LavaClient extends EventEmitter {
   /**
    * The options for the player
    * @name PlayerOptions
-   * @type {{guild: Object, voiceChannel: Object, textChannel: Object, Deafen: Boolean}}
+   * @type {{
+   *  guild: Object,
+   *  voiceChannel: Object,
+   *  textChannel: Object,
+   *  Deafen: Boolean,
+   *  [trackRepeat]: Boolean,
+   *  [queueRepeat]: Boolean
+   *  }}
    */
   /**
    * The options for the node
