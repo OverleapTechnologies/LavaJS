@@ -1,5 +1,5 @@
 {
-  "name": "lavajs",
+  "name": "@anonymousg/lavajs",
   "version": "1.0.0",
   "description": "Dynamic LavaLink wrapper for your discord bot",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "LavaJS",
     "MusicBot"
   ],
-  "author": "ThatAnonymousG",
+  "author": "AnonymousG",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ThatAnonymousGuy/LavaJS/issues"
