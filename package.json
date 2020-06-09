@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ThatAnonymousG/LavaJS.git"
+    "url": "https://github.com/Projects-Me/LavaJS.git"
   },
   "keywords": [
     "Lavalink",
@@ -18,9 +18,9 @@
   "author": "AnonymousG",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ThatAnonymousG/LavaJS/issues"
+    "url": "https://github.com/Projects-Me/LavaJS/issues"
   },
-  "homepage": "https://github.com/ThatAnonymousG/LavaJS#readme",
+  "homepage": "https://github.com/Projects-Me/LavaJS#readme",
   "dependencies": {
     "events": "^3.1.0",
     "node-fetch": "^2.6.0",
