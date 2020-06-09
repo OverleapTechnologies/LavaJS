@@ -1,6 +1,6 @@
 {
   "name": "@anonymousg/lavajs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Dynamic LavaLink wrapper for your discord bot",
   "main": "dist/index.js",
   "repository": {
