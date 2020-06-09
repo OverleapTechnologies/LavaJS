@@ -150,7 +150,9 @@ class LavaClient extends EventEmitter {
     if (!this.client) return;
     const guild = this.client.guilds.get(data.d.guild_id);
     if (guild && this.client.ws.shards) {
-      guild.shard.send(data).catch((err) => throw new Error(err));
+      guild.shard.send(data).catch((err) => {
+        if (err) throw new Error(err);
+      });
     } else if (guild) {
       this.client.ws.send(data);
     }

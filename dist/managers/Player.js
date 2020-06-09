@@ -117,7 +117,9 @@ class Player {
         this.lavaJS.emit("trackPlay", this, track);
         this.playState = true;
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 
   /**
@@ -186,7 +188,9 @@ class Player {
         op: "stop",
         guildId: this.options.guild.id,
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 
   /**
@@ -202,7 +206,9 @@ class Player {
         guildId: this.options.guild.id,
         pause: true,
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 
   /**
@@ -218,7 +224,9 @@ class Player {
         guildId: this.options.guild.id,
         pause: false,
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 
   /**
@@ -244,7 +252,9 @@ class Player {
         guildId: this.options.guild.id,
         position: position,
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 
   /**
@@ -268,7 +278,9 @@ class Player {
         guildId: this.options.guild.id,
         volume: volume,
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 
   /**
@@ -299,7 +311,9 @@ class Player {
         this.lavaJS.emit("destroyPlayer", toDestroy);
         this.lavaJS.playerCollection.delete(guildId);
       })
-      .catch((err) => throw new Error(err));
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
   }
 }
 
