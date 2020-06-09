@@ -74,3 +74,4 @@ bot.log("token");
 
 * **ThatAnonymousG (Ratul Saha)**
 * **Links: [GitHub](https://github.com/ThatAnonymousG) | [Twitter](https://twitter.com/ThatAnonyG) | [DscBio](https://dsc.bio/ThatAnonyG)**
+* [**Donate The Development**](https://paypal.me/ratul003)

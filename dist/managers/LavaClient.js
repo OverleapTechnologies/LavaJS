@@ -157,7 +157,7 @@ class LavaClient extends EventEmitter {
   }
 
   /**
-   * Creates a new LavaJS player which will play the songs
+   * Creates a new LavaJS player or returns old one if player exists
    * @param {LavaClient} lavaJS - The LavaClient.
    * @param {PlayerOptions} options - The player options.
    * @return {Player} player - The new player.
@@ -185,6 +185,9 @@ class LavaClient extends EventEmitter {
       throw new Error(
         `LavaClient#spawnPlayer() Could not resolve PlayerOptions.textChannel.`
       );
+
+    const oldPlayer = this.playerCollection.get(options.guild.id);
+    if (oldPlayer) return oldPlayer;
 
     return new Player(this, options, this.optimisedNode);
   }
