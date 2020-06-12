@@ -29,27 +29,27 @@ npm install @anonymousg/lavajs
 
 **You need the following things before you can kick off with LavaJS:**
 
-* [**Java Installed**](https://www.java.com/en/download/)
-* [**LavaLink CL Server**](https://github.com/Frederikam/Lavalink/releases)
+- [**Java Installed**](https://www.java.com/en/download/)
+- [**LavaLink CL Server**](https://github.com/Frederikam/Lavalink/releases)
 
 > The setup has been covered in our official documentation. Do check it out if you have any doubts.
 
 # Documentation and Support
 
-* **Our official documentation is available [here](https://lavajs.tech).**
-* **For any further query and support join us at [Projects.Me](https://discord.gg/mHHU8vs) discord.**
+- **Our official documentation is available [here](https://lavajs.tech).**
+- **For any further query and support join us at [Projects.Me](https://discord.gg/mHHU8vs) discord.**
 
 # Basic Startup Guide
 
-* **Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://lavajs.tech/#/setup?id=setup-lavalink) in it.**
-* **Run the `Lavalink.jar` file in a terminal window using `java -jar Lavalink.jar`.**
+- **Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://lavajs.tech/#/setup?id=setup-lavalink) in it.**
+- **Run the `Lavalink.jar` file in a terminal window using `java -jar Lavalink.jar`.**
 
 **Example code for running the client:**
 
 ```js
 // Require Discord and LavaJS clients
-const { Client } = require("discord.js"); 
-const { LavaClient } = require("lavajs");
+const { Client } = require("discord.js");
+const { LavaClient } = require("@anonymousg/lavajs");
 
 // New discord client instance
 const bot = new Client();
@@ -60,7 +60,7 @@ const nodes = [
     host: "localhost",
     port: 2333,
     password: "mypassword",
-  }
+  },
 ];
 
 // New LavaClient instance
@@ -70,8 +70,12 @@ const lavaClient = new LavaClient(bot, nodes);
 bot.log("token");
 ```
 
+# Contributor
+
+**Thanks to [Johna-3212](https://github.com/Johna-3212) for making the module compatible with TypeScript!**
+
 # Author
 
-* **ThatAnonymousG (Ratul Saha)**
-* **Links: [GitHub](https://github.com/ThatAnonymousG) | [Twitter](https://twitter.com/ThatAnonyG) | [DscBio](https://dsc.bio/ThatAnonyG)**
-* [**Donate The Development**](https://paypal.me/ratul003)
+- **ThatAnonymousG (Ratul Saha)**
+- **Links: [GitHub](https://github.com/ThatAnonymousG) | [Twitter](https://twitter.com/ThatAnonyG) | [DscBio](https://dsc.bio/ThatAnonyG)**
+- [**Donate The Development**](https://paypal.me/ratul003)
