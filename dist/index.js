@@ -1,14 +1,16 @@
 "use strict";
+//@ts-ignore
 const Utils_1 = require("./utils/Utils");
 const LavaClient_1 = require("./managers/LavaClient");
 const Player_1 = require("./managers/Player");
 const LavaNode_1 = require("./managers/LavaNode");
 const Queue_1 = require("./managers/Queue");
 module.exports = {
-  LavaClient: LavaClient_1.LavaClient,
-  Player: Player_1.Player,
-  LavaNode: LavaNode_1.LavaNode,
-  Queue: Queue_1.Queue,
-  newTrack: Utils_1.newTrack,
-  newPlaylist: Utils_1.newPlaylist,
+    LavaClient: LavaClient_1.LavaClient,
+    Player: Player_1.Player,
+    LavaNode: LavaNode_1.LavaNode,
+    Queue: Queue_1.Queue,
+    newTrack: Utils_1.newTrack,
+    newPlaylist: Utils_1.newPlaylist,
 };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9TcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLFlBQVk7QUFDWix5Q0FBc0Q7QUFDdEQsc0RBQW1EO0FBQ25ELDhDQUEyQztBQUMzQyxrREFBK0M7QUFDL0MsNENBQXlDO0FBQ3pDLGlCQUFTO0lBQ1AsVUFBVSxFQUFFLHVCQUFVO0lBQ3RCLE1BQU0sRUFBRSxlQUFNO0lBQ2QsUUFBUSxFQUFFLG1CQUFRO0lBQ2xCLEtBQUssRUFBRSxhQUFLO0lBQ1osUUFBUSxFQUFSLGdCQUFRO0lBQ1IsV0FBVyxFQUFYLG1CQUFXO0NBQ1osQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8vQHRzLWlnbm9yZVxuaW1wb3J0IHsgbmV3VHJhY2ssIG5ld1BsYXlsaXN0IH0gZnJvbSBcIi4vdXRpbHMvVXRpbHNcIjtcbmltcG9ydCB7IExhdmFDbGllbnQgfSBmcm9tIFwiLi9tYW5hZ2Vycy9MYXZhQ2xpZW50XCI7XG5pbXBvcnQgeyBQbGF5ZXIgfSBmcm9tIFwiLi9tYW5hZ2Vycy9QbGF5ZXJcIjtcbmltcG9ydCB7IExhdmFOb2RlIH0gZnJvbSBcIi4vbWFuYWdlcnMvTGF2YU5vZGVcIjtcbmltcG9ydCB7IFF1ZXVlIH0gZnJvbSBcIi4vbWFuYWdlcnMvUXVldWVcIjtcbmV4cG9ydCA9IHtcbiAgTGF2YUNsaWVudDogTGF2YUNsaWVudCxcbiAgUGxheWVyOiBQbGF5ZXIsXG4gIExhdmFOb2RlOiBMYXZhTm9kZSxcbiAgUXVldWU6IFF1ZXVlLFxuICBuZXdUcmFjayxcbiAgbmV3UGxheWxpc3QsXG59O1xuIl19

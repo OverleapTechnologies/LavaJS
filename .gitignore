@@ -1,6 +1,3 @@
-# The test bot
-bot.js
-
 # NPM trash
 package-lock.json
 node_modules/
@@ -8,3 +5,7 @@ node_modules/
 
 # Docs
 webdocs/
+
+# TS
+Src/
+tsconfig.json
