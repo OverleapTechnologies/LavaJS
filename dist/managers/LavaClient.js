@@ -118,7 +118,7 @@ class LavaClient extends events_1.EventEmitter {
     super();
     this.client = client;
     this.nodes = node;
-    this.shards = shards || 1;
+    this.shards = shards || 0;
     // Collections
     /**
      * The node Map collection
