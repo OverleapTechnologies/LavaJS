@@ -9,3 +9,4 @@ webdocs/
 # TS
 Src/
 tsconfig.json
+tsconfig.tsbuildinfo
