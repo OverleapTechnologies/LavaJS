@@ -10,6 +10,7 @@ declare const _default: {
   };
   newPlaylist(
     data: any,
+    trackArray: any,
     user: any
   ): {
     name: any;

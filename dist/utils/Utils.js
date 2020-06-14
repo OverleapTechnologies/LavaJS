@@ -1,5 +1,5 @@
 "use strict";
-module.exports = {
+const _this = module.exports = {
   /**
    * Make a new track
    * @param {Object} data - The track data from LavaLink.
@@ -36,7 +36,7 @@ module.exports = {
       tracks: [],
     };
     for (let i = 0; i < selectedTrack; i++)
-      tracksData.tracks.push(this.newTrack(data[i], user));
+      tracksData.tracks.push(_this.newTrack(data[i], user));
     return tracksData;
   },
   /**
@@ -59,7 +59,7 @@ module.exports = {
       tracks: [],
     };
     for (let i = 0; i < selectedTrack; i++)
-      playlistData.tracks.push(this.newTrack(trackArray[i], user));
+      playlistData.tracks.push(_this.newTrack(trackArray[i], user));
     return playlistData;
   },
 };
