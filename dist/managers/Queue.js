@@ -47,8 +47,8 @@ class Queue extends Array {
     if (data.tracks && Array.isArray(data.tracks)) {
       for (let i = 0; i < data.trackCount; i++) {
         //@ts-ignore
-        if (!i instanceof Object) continue;
-        this.push(i);
+        if (!data.tracks[i] instanceof Object) continue;
+        this.push(data.tracks[i]);
       }
     } else {
       this.push(data);
