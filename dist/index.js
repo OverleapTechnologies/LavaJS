@@ -11,5 +11,6 @@ module.exports = {
   LavaNode: LavaNode_1.LavaNode,
   Queue: Queue_1.Queue,
   newTrack: Utils_1.newTrack,
+  searchTrack: Utils_1.searchTrack,
   newPlaylist: Utils_1.newPlaylist,
 };

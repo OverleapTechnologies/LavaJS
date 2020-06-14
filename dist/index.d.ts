@@ -8,6 +8,13 @@ declare const _default: {
   LavaNode: typeof LavaNode;
   Queue: typeof Queue;
   newTrack: (data: any, user: any) => {};
+  searchTrack: (
+    data: any,
+    user: any
+  ) => {
+    trackCount: any;
+    tracks: never[];
+  };
   newPlaylist: (
     data: any,
     user: any

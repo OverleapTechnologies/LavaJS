@@ -23,13 +23,31 @@ module.exports = {
     return trackData;
   },
   /**
+   * @param {Object} data
+   * @param {*} user
+   * @returns {Tracks}
+   */
+  searchTrack(data, user) {
+    const selectedTrack = data.length;
+    if (!(selectedTrack || data || Array.isArray(data)))
+      throw new Error(`searchTrack() The "data" must be LavaLink search.`);
+    const tracksData = {
+      trackCount: selectedTrack,
+      tracks: [],
+    };
+    for (let i = 0; i < selectedTrack; i++)
+      tracksData.tracks.push(this.newTrack(data[i], user));
+    return tracksData;
+  },
+  /**
    * Make a new playlist
    * @param {Object} data - The playlist data from LavaLink.
    * @param {*} user - The user to requested the playlist.
    * @returns {Playlist}
    */
-  newPlaylist(data, user) {
-    const { name, selectedTrack, tracks: trackArray } = data;
+  newPlaylist(data, trackArray, user) {
+    const selectedTrack = trackArray.length;
+    const { name } = data;
     if (!(name || selectedTrack || trackArray || Array.isArray(trackArray)))
       throw new Error(`newPlaylist() The "data" must be LavaLink playlist.`);
     const playlistData = {

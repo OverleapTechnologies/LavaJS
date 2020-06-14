@@ -1,5 +1,13 @@
 declare const _default: {
   newTrack(data: any, user: any): {};
+  searchTrack(
+    data: any,
+    tracks: any,
+    user: any
+  ): {
+    trackCount: any;
+    tracks: never[];
+  };
   newPlaylist(
     data: any,
     user: any
