@@ -115,11 +115,11 @@ class Player {
   /**
    * Search a track or playlist from YouTube
    * @param {String} query - The song or playlist name or link.
-   * @param {Boolean} [add=false] - Add to the queue automatically if response is a track.
    * @param {*} user - The user who requested the track.
+   * @param {Boolean} [add=false] - Add to the queue automatically if response is a track.
    * @return {Promise<Track|Playlist>} result - The search data can be single track or playlist.
    */
-  lavaSearch(query, add = true, user) {
+  lavaSearch(query, user, add = true) {
     return new Promise(async (resolve, reject) => {
       const search = new RegExp(/^https?:\/\//g).test(query)
         ? query
