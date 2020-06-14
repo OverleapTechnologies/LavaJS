@@ -105,14 +105,15 @@ class LavaNode {
   /**
    * Handles close connection events
    * @param {Number} code - The error code
+   * @param {String} reason - The reason
    */
-  onClose(code) {
+  onClose(code, reason) {
     this.lavaJS.emit(
       "nodeClose",
       this,
-      new Error(`Connection closed with code: ${code}`)
+      new Error(`Connection closed with code: ${code} and reason: ${reason}`)
     );
-    if (code !== 1000) this.reconnect();
+    if (code !== 1000 || reason !== "destroy") this.reconnect();
   }
   /**
    * Handles connection errors
@@ -138,9 +139,9 @@ class LavaNode {
         );
         return this.kill();
       }
-      this.lavaJS.emit("nodeReconnect", this);
       this.con.removeEventListener();
       this.con = null;
+      this.lavaJS.emit("nodeReconnect", this);
       this.connect();
       this.conStatus.attempts++;
     }, 3e4);
@@ -236,20 +237,18 @@ class LavaNode {
    * @returns {Promise<Boolean>}
    */
   wsSend(data) {
-    new Promise((res, rej) => {
+    return new Promise((res, rej) => {
       const formattedData = JSON.stringify(data);
       if (!this.online) res(false);
       if (!formattedData || !formattedData.startsWith("{"))
         rej(`The data was not in the proper format.`);
       this.con.send(
         formattedData,
-        { compress: false, binary: false, fin: false, mask: false },
+        { compress: false, binary: false, fin: false, mask: true },
         (err) => {
           err ? rej(err) : res(true);
         }
       );
-    }).catch((err) => {
-      if (err) throw new Error(err);
     });
   }
 }

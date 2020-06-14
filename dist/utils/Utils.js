@@ -29,18 +29,18 @@ module.exports = {
    * @returns {Playlist}
    */
   newPlaylist(data, user) {
-    const { name, selectedTrack, tracks: trackArray } = data;
-    if (!(name || selectedTrack || trackArray || Array.isArray(trackArray)))
+    const { name, trackCount, tracks: trackArray } = data;
+    if (!(name || trackCount || trackArray || Array.isArray(trackArray)))
       throw new Error(`newPlaylist() The "data" must be LavaLink playlist.`);
     const playlistData = {
       name: name,
-      trackCount: selectedTrack,
+      trackCount: trackCount,
       duration: trackArray
         .map((t) => t.info.length)
         .reduce((acc, val) => acc + val, 0),
       tracks: [],
     };
-    for (let i = 0; i < selectedTrack; i++)
+    for (let i = 0; i < trackCount; i++)
       playlistData.tracks.push(this.newTrack(trackArray[i], user));
     return playlistData;
   },

@@ -4,7 +4,7 @@ exports.Player = void 0;
 //@ts-nocheck
 const Queue_1 = require("./Queue");
 const fetch = require("node-fetch");
-const { newTrack, newPlaylist } = require("../utils/Utils");
+const Utils_1 = require("../utils/Utils");
 class Player {
   /**
    * The player class which plays the music
@@ -32,7 +32,7 @@ class Player {
      * @type {LavaNode}
      * @readonly
      */
-    this.node = node || this.lavaJS.optimisedNode;
+    this.node = node;
     /**
      * The current track position
      * @type {Number}
@@ -120,31 +120,40 @@ class Player {
    * @return {Promise<Track|Playlist>} result - The search data can be single track or playlist.
    */
   lavaSearch(query, add = true, user) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const search = new RegExp(/^https?:\/\//g).test(query)
         ? query
         : `ytsearch:${query}`;
-      const { loadType, playlistInfo, tracks, exception } = fetch(
-        `http://${this.node.options.host}:${this.node.options.port}/loadtracks`,
-        {
-          headers: { Authorization: this.node.options.password },
-          params: { identifier: search },
-        }
-      )
-        .json()
-        .then((res) => res)
-        .catch((err) => reject(err));
+      const { loadType, playlistInfo, tracks, exception } = await (
+        await fetch(
+          `http://${this.node.options.host}:${this.node.options.port}/loadtracks?identifier=${search}`,
+          {
+            headers: { Authorization: this.node.options.password },
+          }
+        )
+      ).json();
       switch (loadType) {
         // Successful loading
         case "TRACK_LOADED":
-          const trackData = newTrack(tracks[0], user);
-          if (!add) return trackData;
+          const trackData = Utils_1.newTrack(tracks[0], user);
+          if (!add) return resolve(trackData);
           this.queue.add(trackData);
           resolve(trackData);
           break;
         case "PLAYLIST_LOADED":
-          const playlist = newPlaylist(playlistInfo, user);
+          const data = {
+            name: playlistInfo.name,
+            trackCount: tracks.length,
+            tracks: tracks,
+          };
+          const playlist = Utils_1.newPlaylist(data, user);
           resolve(playlist);
+          break;
+        case "SEARCH_RESULT":
+          const track1 = Utils_1.newTrack(tracks[0], user);
+          if (!add) return resolve(track1);
+          this.queue.add(track1);
+          resolve(track1);
           break;
         // Error loading
         case "NO_MATCHES":
@@ -260,16 +269,12 @@ class Player {
   }
   /**
    * Destroy the player
-   * @param {Snowflake} guildId - The ID of the guild
    */
-  destroy(guildId) {
-    const toDestroy = this.lavaJS.playerCollection.get(guildId);
-    if (!toDestroy)
-      throw new Error(`Player#destroy() No players found for that guild.`);
+  destroy() {
     this.lavaJS.wsSend({
       op: 4,
       d: {
-        guild_id: guildId,
+        guild_id: this.options.guild.id || this.options.guild,
         channel_id: null,
         self_deaf: false,
         self_mute: false,
@@ -278,15 +283,15 @@ class Player {
     this.node
       .wsSend({
         op: "destroy",
-        guildId: guildId,
-      })
-      .then(() => {
-        this.lavaJS.emit("destroyPlayer", toDestroy);
-        this.lavaJS.playerCollection.delete(guildId);
+        guildId: this.options.guild.id || this.options.guild,
       })
       .catch((err) => {
-        throw new Error(err);
+        if (err) throw new Error(err);
       });
+    this.lavaJS.playerCollection.delete(
+      this.options.guild.id || this.options.guild
+    );
+    this.lavaJS.emit("destroyPlayer", this);
   }
 }
 exports.Player = Player;

@@ -112,13 +112,12 @@ class LavaClient extends events_1.EventEmitter {
    * Creates a new LavaJSClient class instance
    * @param {*} client - The Discord client.
    * @param {Array<NodeOptions>} node - The LavaNode to use.
-   * @param {Number} [shards=0] - Shards count of the Discord client.
    */
-  constructor(client, node, shards) {
+  constructor(client, node) {
     super();
     this.client = client;
     this.nodes = node;
-    this.shards = shards || 0;
+    this.shards = client.ws.shards.size;
     // Collections
     /**
      * The node Map collection
@@ -146,12 +145,10 @@ class LavaClient extends events_1.EventEmitter {
   wsSend(data) {
     if (!this.client) return;
     const guild = this.client.guilds.cache.get(data.d.guild_id);
-    if (guild && this.client.ws.shards) {
-      guild.shard.send(data).catch((err) => {
-        throw new Error(err);
-      });
+    if (guild && this.shards > 1) {
+      guild.shard.send(data);
     } else if (guild) {
-      this.client.ws.send(data);
+      this.client.ws.shards.get(0).send(data);
     }
   }
   /**
@@ -161,13 +158,13 @@ class LavaClient extends events_1.EventEmitter {
    * @return {Player} player - The new player.
    */
   spawnPlayer(lavaJS, options) {
-    if (!options.guild.id)
+    if (options.guild && !options.guild.id)
       options.guild = this.client.guilds.cache.get(options.guild);
     if (!options.guild)
       throw new Error(
         `LavaClient#spawnPlayer() Could not resolve PlayerOptions.guild.`
       );
-    if (!options.voiceChannel.id)
+    if (!options.voiceChannel && !options.voiceChannel.id)
       options.voiceChannel = options.guild.channels.cache.get(
         options.voiceChannel
       );
@@ -175,7 +172,7 @@ class LavaClient extends events_1.EventEmitter {
       throw new Error(
         `LavaClient#spawnPlayer() Could not resolve PlayerOptions.voiceChannel.`
       );
-    if (!options.textChannel.id)
+    if (!options.textChannel && !options.textChannel.id)
       options.textChannel = options.guild.channels.cache.get(
         options.textChannel
       );
