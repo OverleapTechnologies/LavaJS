@@ -176,10 +176,11 @@ class LavaNode {
       }
     } else if (op === "event") {
       if (!guildId) return;
-      // LavaJS player for that guild
       const player = this.lavaJS.playerCollection.get(guildId);
-      const track = player.queue[0];
+      if (!player) return;
       player.playState = false;
+      const track = player.queue[0];
+      if (!track) return;
       // Handle track event messages
       switch (type) {
         case "TrackEndEvent":

@@ -45,6 +45,12 @@ class Player {
      * @readonly
      */
     this.volume = 100;
+    /**
+     * The discord voiceStates
+     * @type {Object}
+     * @readonly
+     */
+    this.voiceState = {};
     // Public properties
     /**
      * The queue of this player

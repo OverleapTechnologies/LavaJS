@@ -137,6 +137,8 @@ class LavaClient extends events_1.EventEmitter {
       const newNode = new LavaNode_1.LavaNode(this, x);
       this.nodeCollection.set(x.host, newNode);
     }
+    // Voice state updates
+    this.client.on("raw", this.handleStateUpdate.bind(this));
   }
   /**
    * Send data to Discord via WebSocket.
@@ -198,6 +200,39 @@ class LavaClient extends events_1.EventEmitter {
         return loadB - loadA;
       });
     return sorted[0][1];
+  }
+  /**
+   * Handles discord's voice state updates
+   * @param {Object} data - The data packet from discord
+   */
+  handleStateUpdate(data) {
+    if (!["VOICE_STATE_UPDATE", "VOICE_SERVER_UPDATE"].includes(data.t)) return;
+    if (data.d.user_id && data.d.user_id !== this.client.user.id) return;
+    const player = this.playerCollection.get(data.d.guild_id);
+    if (!player) return;
+    switch (data.t) {
+      case "VOICE_STATE_UPDATE":
+        player.voiceState.op = "voiceUpdate";
+        player.voiceState.sessionId = data.d.session_id;
+        if (player.options.voiceChannel.id !== data.d.channel_id) {
+          const newChannel = this.client.channels.cache.get(data.d.channel_id);
+          if (newChannel) player.options.voiceChannel = newChannel;
+        }
+        break;
+      case "VOICE_SERVER_UPDATE":
+        player.voiceState.guildId = data.d.guild_id;
+        player.voiceState.event = data.d;
+        break;
+    }
+    const { op, guildId, sessionId, event } = player.voiceState;
+    if (op && guildId && sessionId && event) {
+      player.node
+        .wsSend(player.voiceState)
+        .then(() => (player.voiceState = {}))
+        .catch((err) => {
+          if (err) throw new Error(err);
+        });
+    }
   }
 }
 exports.LavaClient = LavaClient;
