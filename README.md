@@ -8,7 +8,7 @@
     <a href="https://discord.gg/mHHU8vs"><img src="https://discordapp.com/api/guilds/718157763821174884/widget.png?style=shield" alt="Discord" /></a>
     <a href="https://github.com/ThatAnonymousG/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@anonymousg/lavajs" alt="License" /></a>
     <a href="https://npmjs.com/package/@anonymousg/lavajs"><img src="https://img.shields.io/npm/dt/@anonymousg/lavajs" alt="Downloads" /></a>
-    <a href="https://david-dm.org/ThatAnonymousG/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a>
+    <a href="https://david-dm.org/Projects-Me/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a>
     <a href="https://twitter.com/ThatAnonyG"><img src="https://img.shields.io/twitter/follow/ThatAnonyG?label=Follow&style=social" alt="Twitter" /></a>
   </p>
   <br />
