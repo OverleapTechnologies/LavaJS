@@ -3,10 +3,5 @@ package-lock.json
 node_modules/
 .idea/
 
-# Docs
-webdocs/
-
-# TS
-Src/
-tsconfig.json
-tsconfig.tsbuildinfo
+# Ignore these too
+dist/

@@ -1,32 +1,42 @@
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.LavaNode = void 0;
-//@ts-nocheck
-const ws_1 = __importDefault(require("ws"));
-class LavaNode {
+
+import WebSocket from "ws";
+import { LavaClient } from "./LavaClient";
+import { NodeOptions, NodeStats, Track } from "../utils/Interfaces";
+import { Player } from "./Player";
+
+export class LavaNode {
+  public readonly lavaJS: LavaClient;
+  /**
+   * The options for the node
+   */
+  public readonly options: NodeOptions;
+  /**
+   * The node's system status
+   */
+  public stats: NodeStats;
+  /**
+   * The node's connection status
+   */
+  private readonly conStatus: { doRetry: number; attempts: number };
+  /**
+   * The websocket connection
+   */
+  public con: WebSocket;
+  /**
+   * Handles the reconnect
+   */
+  private reconnectModule: NodeJS.Timeout;
+
   /**
    * Create new LavaNode class instance
    * @param {LavaClient} lavaJS - The LavaClient.
    * @param {NodeOptions} options - The LavaNode options.
    */
-  constructor(lavaJS, options) {
+  constructor(lavaJS: LavaClient, options: NodeOptions) {
     this.lavaJS = lavaJS;
-    /**
-     * The options for the node
-     * @type {NodeOptions}
-     * @readonly
-     */
     this.options = options;
-    /**
-     * The node system stats
-     * @type {Object}
-     * @private
-     */
+
     this.stats = {
       playingPlayers: 0,
       memory: {
@@ -43,49 +53,44 @@ class LavaNode {
       },
       uptime: 0,
     };
-    /**
-     * Connection stats
-     * @type {Object}
-     * @private
-     */
+
     this.conStatus = {
       attempts: 0,
       doRetry: 5,
     };
-    // Establish a WebSocket connection
+
     this.connect();
   }
+
   /**
    * The node's system usage status
-   * @return {Object}
+   * @return {NodeStats}
    * @readonly
    */
-  get systemStats() {
-    return {
-      memory: this.stats.memory,
-      cpu: this.stats.cpu,
-      uptime: this.stats.uptime,
-    };
+  public get systemStats(): NodeStats {
+    return this.stats;
   }
+
   /**
    * The node's connection status
    * @return {Boolean}
    * @readonly
    */
-  get online() {
+  public get online(): boolean {
     if (!this.con) return false;
-    return this.con.readyState === ws_1.default.OPEN;
+    return this.con.readyState === WebSocket.OPEN;
   }
+
   /**
    * Establish a node websocket connection
    */
-  connect() {
-    const headers = {
+  public connect(): void {
+    const headers: any = {
       Authorization: this.options.password,
       "Num-Shards": this.lavaJS.shards,
       "User-Id": this.lavaJS.client.user.id,
     };
-    this.con = new ws_1.default(
+    this.con = new WebSocket(
       `ws://${this.options.host}:${this.options.port}/`,
       { headers }
     );
@@ -94,19 +99,21 @@ class LavaNode {
     this.con.on("close", this.onClose.bind(this));
     this.con.on("message", this.handleResponse.bind(this));
   }
+
   /**
    * Handles successful connections
    */
-  onConnect() {
+  private onConnect(): void {
     if (this.reconnectModule) clearTimeout(this.reconnectModule);
     this.lavaJS.emit("nodeSuccess", this);
   }
+
   /**
    * Handles close connection events
    * @param {Number} code - The error code
    * @param {String} reason - The reason
    */
-  onClose(code, reason) {
+  private onClose(code: number, reason: string): void {
     this.lavaJS.emit(
       "nodeClose",
       this,
@@ -114,19 +121,21 @@ class LavaNode {
     );
     if (code !== 1000 || reason !== "destroy") this.reconnect();
   }
+
   /**
    * Handles connection errors
-   * @param {String} error - The error message
+   * @param {Error} error - The error message
    */
-  onError(error) {
+  private onError(error: Error): void {
     if (!error) return;
     this.lavaJS.emit("nodeError", this, error);
     this.reconnect();
   }
+
   /**
    * Reconnect to the node if disconnected
    */
-  reconnect() {
+  public reconnect(): void {
     this.reconnectModule = setTimeout(() => {
       if (this.conStatus.attempts >= this.conStatus.doRetry) {
         this.lavaJS.emit(
@@ -138,60 +147,66 @@ class LavaNode {
         );
         return this.kill();
       }
-      this.con.removeEventListener();
+      this.con.removeAllListeners();
       this.con = null;
       this.lavaJS.emit("nodeReconnect", this);
       this.connect();
       this.conStatus.attempts++;
     }, 3e4);
   }
+
   /**
    * Destroys the node
    */
-  kill() {
+  public kill(): void {
     if (!this.online) return;
     this.con.close(1000, "destroy");
-    this.con.removeEventListener();
+    this.con.removeAllListeners();
     this.con = null;
     this.lavaJS.nodeCollection.delete(this.options.host);
   }
+
   /**
    * Handle any incoming data from the node
    */
-  handleResponse(data) {
-    const msg = JSON.parse(data.toString());
+  private handleResponse(data: any): void {
+    const msg: any = JSON.parse(data.toString());
     const { op, type, code, guildId, state } = msg;
     if (!op) return;
+
     if (op !== "event") {
       // Handle non-track event messages
       switch (op) {
         case "stats":
           this.stats = Object.assign({}, msg);
-          delete this.stats.op;
+          delete (this.stats as any).op;
           break;
+
         case "playerUpdate":
-          const player = this.lavaJS.playerCollection.get(guildId);
+          const player: Player = this.lavaJS.playerCollection.get(guildId);
           if (player) player.position = state.position || 0;
           break;
       }
     } else if (op === "event") {
       if (!guildId) return;
-      const player = this.lavaJS.playerCollection.get(guildId);
+      const player: Player = this.lavaJS.playerCollection.get(guildId);
       if (!player) return;
       player.playState = false;
-      const track = player.queue[0];
+      const track: Track = player.queue[0];
+
       // Handle track event messages
       switch (type) {
         case "TrackStartEvent":
           player.playState = true;
           this.lavaJS.emit("trackPlay", track, player);
           break;
+
         case "TrackEndEvent":
           if (!track) return;
           if (track && player.repeatTrack) {
             player.play();
           } else if (track && player.repeatQueue) {
-            const toAdd = player.queue.remove();
+            const toAdd: Track = player.queue.remove();
             if (toAdd) player.queue.add(toAdd);
             player.play();
           } else if (track && player.queue.size > 1) {
@@ -202,18 +217,21 @@ class LavaNode {
             this.lavaJS.emit("queueOver", player);
           }
           break;
+
         case "TrackStuckEvent":
           if (!track) return;
           player.queue.remove();
           if (player.skipOnError) player.play();
           this.lavaJS.emit("trackStuck", track, player, msg);
           break;
+
         case "TrackExceptionEvent":
           if (!track) return;
           player.queue.remove();
           if (player.skipOnError) player.play();
           this.lavaJS.emit("trackError", track, player, msg);
           break;
+
         case "WebSocketClosedEvent":
           if ([4009, 4015].includes(code))
             this.lavaJS.wsSend({
@@ -237,21 +255,23 @@ class LavaNode {
       );
     }
   }
+
   /**
    * Send data to the node's websocket
    * @param {Object} data - The data packet
    * @returns {Promise<Boolean>}
    */
-  wsSend(data) {
+  public wsSend(data: Object): Promise<boolean> {
     return new Promise((res, rej) => {
-      const formattedData = JSON.stringify(data);
       if (!this.online) res(false);
+
+      const formattedData: string = JSON.stringify(data);
       if (!formattedData || !formattedData.startsWith("{"))
         rej(`The data was not in the proper format.`);
+
       this.con.send(formattedData, (err) => {
         err ? rej(err) : res(true);
       });
     });
   }
 }
-exports.LavaNode = LavaNode;

@@ -1,83 +1,80 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Player = void 0;
-//@ts-nocheck
-const Queue_1 = require("./Queue");
-const fetch = require("node-fetch");
-const Utils_1 = require("../utils/Utils");
-class Player {
+
+import { Queue } from "./Queue";
+import { LavaClient } from "./LavaClient";
+import { LavaNode } from "./LavaNode";
+import { Utils } from "../utils/Utils";
+import fetch from "node-fetch";
+import { PlayerOptions, Playlist, Track } from "../utils/Interfaces";
+import { User } from "discord.js";
+
+export class Player {
+  /**
+   * The LavaClient instance
+   */
+  public readonly lavaJS: LavaClient;
+  /**
+   * The options for the player
+   */
+  public readonly options: PlayerOptions;
+  /**
+   * The node of this player
+   */
+  public readonly node: LavaNode;
+  /**
+   * The player queue
+   */
+  public readonly queue: Queue;
+  /**
+   * Whether the player has a loaded track
+   */
+  public playState: boolean = false;
+  /**
+   * The position of the track
+   */
+  public position: number = 0;
+  /**
+   * The player volume
+   */
+  public volume: number = 100;
+  /**
+   * Whether to repeat the current track
+   */
+  public repeatTrack: boolean;
+  /**
+   * Whether to repeat the queue
+   */
+  public repeatQueue: boolean;
+  /**
+   * Whether to skip the song on a track error
+   */
+  public skipOnError: boolean;
+  /**
+   * Whether the player is paused
+   */
+  public playPaused: boolean = false;
+
   /**
    * The player class which plays the music
    * @param {LavaClient} lavaJS - The LavaClient.
    * @param {PlayerOptions} options - The player options.
    * @param {LavaNode} [node=optimisedNode] - The node to use.
    */
-  constructor(lavaJS, options, node) {
+  constructor(lavaJS: LavaClient, options: PlayerOptions, node?: LavaNode) {
     this.lavaJS = lavaJS;
-    // Readonly
-    /**
-     * The player options
-     * @type {PlayerOptions}
-     * @readonly
-     */
     this.options = options;
-    /**
-     * Whether the player has a loaded track
-     * @type {Boolean}
-     * @readonly
-     */
+    this.node = node || this.lavaJS.optimisedNode;
+
     this.playState = false;
-    /**
-     * The player node
-     * @type {LavaNode}
-     * @readonly
-     */
-    this.node = node;
-    /**
-     * The current track position
-     * @type {Number}
-     * @readonly
-     */
     this.position = 0;
-    /**
-     * The volume of the player
-     * @type {Number}
-     * @readonly
-     */
     this.volume = 100;
-    /**
-     * The discord voiceStates
-     * @type {Object}
-     * @readonly
-     */
-    this.voiceState = {};
-    /**
-     * Whether the player is paused
-     * @type {Boolean}
-     * @readonly
-     */
     this.playPaused = false;
-    // Public properties
-    /**
-     * The queue of this player
-     * @type {Queue}
-     */
-    this.queue = new Queue_1.Queue(this.lavaJS);
-    /**
-     * Whether the track is set on repeat
-     * @type {Boolean}
-     */
     this.repeatTrack = options.trackRepeat || false;
-    /**
-     * Whether the queue is set on repeat
-     * @type {Boolean}
-     */
     this.repeatQueue = options.queueRepeat || false;
-    /**
-     * Whether to skip to next song on error
-     * @type {Boolean}
-     */
     this.skipOnError = options.skipOnError || false;
+
+    this.queue = new Queue(this);
+
     // Establish a Discord voice connection
     this.lavaJS.wsSend({
       op: 4,
@@ -88,33 +85,37 @@ class Player {
         self_mute: false,
       },
     });
+
     this.lavaJS.playerCollection.set(options.guild.id, this);
     this.lavaJS.emit("createPlayer", this);
   }
+
   /**
    * Whether the player has a loaded track
    * @returns {Boolean}
    */
-  get playing() {
+  public get playing(): boolean {
     return this.playState;
   }
+
   /**
    * Whether the player is paused
    * @returns {Boolean}
    */
-  get paused() {
+  public get paused(): boolean {
     return this.playPaused;
   }
+
   /**
    * Play the next track in the queue
    */
-  play() {
+  public play(): void {
     if (this.queue.size <= 0)
       throw new RangeError(`Player#play() No tracks in the queue.`);
     if (this.playing) {
       return this.stop();
     }
-    const track = this.queue[0];
+    const track: Track = this.queue[0];
     this.node
       .wsSend({
         op: "play",
@@ -126,18 +127,24 @@ class Player {
         if (err) throw new Error(err);
       });
   }
+
   /**
    * Search a track or playlist from YouTube
    * @param {String} query - The song or playlist name or link.
    * @param {*} user - The user who requested the track.
    * @param {Boolean} [add=false] - Add to the queue automatically if response is a track.
-   * @return {Promise<Track|Array<Track>|Playlist>} result - The search data can be single track or playlist or array of tracks.
+   * @return {Promise<Array<Track>|Playlist>} result - The search data can be single track or playlist or array of tracks.
    */
-  lavaSearch(query, user, add = true) {
+  public lavaSearch(
+    query: string,
+    user: User,
+    add: boolean = false
+  ): Promise<Track[] | Playlist> {
     return new Promise(async (resolve, reject) => {
-      const search = new RegExp(/^https?:\/\//g).test(query)
+      const search: string = new RegExp(/^https?:\/\//g).test(query)
         ? query
         : `ytsearch:${query}`;
+
       const { loadType, playlistInfo, tracks, exception } = await (
         await fetch(
           `http://${this.node.options.host}:${this.node.options.port}/loadtracks?identifier=${search}`,
@@ -146,27 +153,33 @@ class Player {
           }
         )
       ).json();
+
       switch (loadType) {
         // Successful loading
         case "TRACK_LOADED":
-          const trackData = Utils_1.newTrack(tracks[0], user);
-          if (!add) return resolve(trackData);
+          const arr: Track[] = [];
+          const trackData: Track = Utils.newTrack(tracks[0], user);
+          arr.push(trackData);
+          if (!add) return resolve(arr);
           this.queue.add(trackData);
-          resolve(trackData);
+          resolve(arr);
           break;
+
         case "PLAYLIST_LOADED":
-          const data = {
+          const data: any = {
             name: playlistInfo.name,
             trackCount: tracks.length,
             tracks: tracks,
           };
-          const playlist = Utils_1.newPlaylist(data, user);
+          const playlist: Playlist = Utils.newPlaylist(data, user);
           resolve(playlist);
           break;
+
         case "SEARCH_RESULT":
-          const res = tracks.map((t) => Utils_1.newTrack(t, user));
+          const res: Track[] = tracks.map((t) => Utils.newTrack(t, user));
           resolve(res);
           break;
+
         // Error loading
         case "NO_MATCHES":
           reject(
@@ -175,6 +188,7 @@ class Player {
             )
           );
           break;
+
         case "LOAD_FAILED":
           const { message, severity } = exception;
           reject(
@@ -184,10 +198,11 @@ class Player {
       }
     });
   }
+
   /**
    * Stops the player
    */
-  stop() {
+  public stop(): void {
     this.node
       .wsSend({
         op: "stop",
@@ -197,12 +212,14 @@ class Player {
         if (err) throw new Error(err);
       });
   }
+
   /**
    * Pauses the track if player is resumed
    */
-  pause() {
+  public pause(): void {
     if (this.paused)
       throw new Error(`Player#pause() The player is already paused.`);
+
     this.node
       .wsSend({
         op: "pause",
@@ -212,14 +229,17 @@ class Player {
       .catch((err) => {
         if (err) throw new Error(err);
       });
+
     this.playPaused = true;
   }
+
   /**
    * Resumes the track if player is paused
    */
-  resume() {
+  public resume(): void {
     if (!this.paused)
       throw new Error(`Player#resume() The player is already resumed.`);
+
     this.node
       .wsSend({
         op: "pause",
@@ -229,13 +249,15 @@ class Player {
       .catch((err) => {
         if (err) throw new Error(err);
       });
+
     this.playPaused = false;
   }
+
   /**
    * Seek the track to a timestamp
    * @param {Number} position - The position to seek to.
    */
-  seek(position) {
+  public seek(position: number): void {
     if (this.queue.empty)
       throw new RangeError(`Player#seek() No tracks in queue.`);
     if (isNaN(position))
@@ -246,6 +268,7 @@ class Player {
       throw new RangeError(
         `Player#seek() The provided position must be in between 0 and ${this.queue[0].length}.`
       );
+
     this.position = position;
     this.node
       .wsSend({
@@ -257,11 +280,12 @@ class Player {
         if (err) throw new Error(err);
       });
   }
+
   /**
-   * Sets player volume
-   * @param {Number} volume - The new volume.
+   * Sets player volume or reset it to 100
+   * @param {Number} [volume=100] - The new volume.
    */
-  setVolume(volume) {
+  public setVolume(volume: number = 100): void {
     if (isNaN(volume))
       throw new RangeError(
         `Player#volume() The provided volume is not a number.`
@@ -270,6 +294,7 @@ class Player {
       throw new RangeError(
         `Player#setVolume() Provided volume must be in between 0 and 1000.`
       );
+
     this.volume = volume;
     this.node
       .wsSend({
@@ -281,31 +306,31 @@ class Player {
         if (err) throw new Error(err);
       });
   }
+
   /**
    * Destroy the player
    */
-  destroy() {
+  public destroy(): void {
     this.lavaJS.wsSend({
       op: 4,
       d: {
-        guild_id: this.options.guild.id || this.options.guild,
+        guild_id: this.options.guild.id,
         channel_id: null,
         self_deaf: false,
         self_mute: false,
       },
     });
+
     this.node
       .wsSend({
         op: "destroy",
-        guildId: this.options.guild.id || this.options.guild,
+        guildId: this.options.guild.id,
       })
       .catch((err) => {
         if (err) throw new Error(err);
       });
-    this.lavaJS.playerCollection.delete(
-      this.options.guild.id || this.options.guild
-    );
+
+    this.lavaJS.playerCollection.delete(this.options.guild.id);
     this.lavaJS.emit("destroyPlayer", this);
   }
 }
-exports.Player = Player;
