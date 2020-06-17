@@ -7,7 +7,7 @@ import { NodeOptions, PlayerOptions } from "../utils/Interfaces";
 import { VoiceChannel } from "discord.js";
 const states: Map<string, any> = new Map();
 
-export class LavaClient extends EventEmitter {
+class LavaClient extends EventEmitter {
   /**
    * The discord client
    */
@@ -165,15 +165,15 @@ export class LavaClient extends EventEmitter {
    * @return {LavaNode}
    */
   public get optimisedNode(): LavaNode {
-    const toArray: [string, LavaNode][] = [...this.nodeCollection.entries()];
-    const sorted: [string, LavaNode][] = toArray
-      .filter((x) => x[1].online)
+    const toArray: LavaNode[] = [...this.nodeCollection.values()];
+    const sorted: LavaNode[] = toArray
+      .filter((x) => x.online)
       .sort((a, b) => {
-        const loadA = (a[1].stats.cpu.systemLoad / a[1].stats.cpu.cores) * 100;
-        const loadB = (b[1].stats.cpu.systemLoad / b[1].stats.cpu.cores) * 100;
+        const loadA = (a.stats.cpu.systemLoad / a.stats.cpu.cores) * 100;
+        const loadB = (b.stats.cpu.systemLoad / b.stats.cpu.cores) * 100;
         return loadB - loadA;
       });
-    return sorted[0][1];
+    return sorted[0];
   }
 
   /**
@@ -220,3 +220,5 @@ export class LavaClient extends EventEmitter {
     }
   }
 }
+
+export { LavaClient };

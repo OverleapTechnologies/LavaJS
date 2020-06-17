@@ -61,6 +61,7 @@ declare module "@anonymousg/lavajs" {
     public readonly options: PlayerOptions;
     public readonly node: LavaNode;
     public readonly queue: Queue;
+    public readonly bands: Map<number, { band: number; gain: number }>;
 
     public playState: boolean;
     public position: number;
@@ -73,6 +74,9 @@ declare module "@anonymousg/lavajs" {
     public get paused(): boolean;
     public get playing(): boolean;
 
+    public toggleRepeat(type?: "track" | "queue"): boolean;
+    public EQBands(band?: number, gain?: number): void;
+    public movePlayer(channel: VoiceChannel): void;
     public play(): void;
     public lavaSearch(
       query: string,
@@ -100,11 +104,13 @@ declare module "@anonymousg/lavajs" {
     public remove(pos: number): Track | null;
     public wipe(start: number, end: number): Track[];
     public clear(): void;
+    public moveTrack(from: number, to: number): void;
   }
 
   export class Utils {
     public static newTrack(data: any, user: User): Track;
     public static newPlaylist(data: any, user: User): Playlist;
+    public static formatTime(ms: number): string;
   }
 
   export interface Track {

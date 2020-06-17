@@ -1,12 +1,12 @@
 import { User } from "discord.js";
 import { Playlist, Track } from "./Interfaces";
 
-export class Utils {
+class Utils {
   /**
    * Make a new track
    * @param {*} data - The track data from LavaLink.
-   * @param {*} user - The user to requested the track.
-   * @returns {Track}
+   * @param {User} user - The user to requested the track.
+   * @return {Track}
    */
   public static newTrack(data: any, user: User): Track {
     const trackData: any = {};
@@ -29,8 +29,8 @@ export class Utils {
   /**
    * Make a new playlist
    * @param {*} data - The playlist data from LavaLink.
-   * @param {*} user - The user to requested the playlist.
-   * @returns {Playlist}
+   * @param {User} user - The user to requested the playlist.
+   * @return {Playlist}
    */
   public static newPlaylist(data: any, user: User): Playlist {
     const { name, trackCount, tracks: trackArray } = data;
@@ -51,4 +51,37 @@ export class Utils {
 
     return playlistData;
   }
+
+  /**
+   * Format the track or playlist duration
+   * @param {Number} ms - The duration in milliseconds
+   * @return {String} time - The formatted timestamp
+   */
+  public static formatTime(ms: number): string {
+    const time: any = {
+      d: 0,
+      h: 0,
+      m: 0,
+      s: 0,
+    };
+    time.s = Math.floor(ms / 1000);
+    time.m = Math.floor(time.s / 60);
+    time.s = time.s % 60;
+    time.h = Math.floor(time.m / 60);
+    time.m = time.m % 60;
+    time.d = Math.floor(time.h / 24);
+    time.h = time.h % 24;
+
+    const res: Array<string> = [];
+    for (const [k, v] of Object.entries(time)) {
+      let first = false;
+      if (v < 1 && !first) continue;
+      res.push(v < 10 ? `0${v}` : `${v}`);
+      first = true;
+    }
+
+    return res.join(":");
+  }
 }
+
+export { Utils };

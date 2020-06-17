@@ -5,7 +5,7 @@ import { LavaClient } from "./LavaClient";
 import { NodeOptions, NodeStats, Track } from "../utils/Interfaces";
 import { Player } from "./Player";
 
-export class LavaNode {
+class LavaNode {
   public readonly lavaJS: LavaClient;
   /**
    * The options for the node
@@ -275,3 +275,5 @@ export class LavaNode {
     });
   }
 }
+
+export { LavaNode };

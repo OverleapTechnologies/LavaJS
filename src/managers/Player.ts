@@ -6,9 +6,9 @@ import { LavaNode } from "./LavaNode";
 import { Utils } from "../utils/Utils";
 import fetch from "node-fetch";
 import { PlayerOptions, Playlist, Track } from "../utils/Interfaces";
-import { User } from "discord.js";
+import { User, VoiceChannel } from "discord.js";
 
-export class Player {
+class Player {
   /**
    * The LavaClient instance
    */
@@ -25,6 +25,10 @@ export class Player {
    * The player queue
    */
   public readonly queue: Queue;
+  /**
+   * The band collection
+   */
+  public readonly bands: Map<number, { band: number; gain: number }>;
   /**
    * Whether the player has a loaded track
    */
@@ -74,6 +78,12 @@ export class Player {
     this.skipOnError = options.skipOnError || false;
 
     this.queue = new Queue(this);
+    this.bands = new Map();
+
+    // Set the bands default
+    for (let i = 0; i < 15; i++) {
+      this.bands.set(i, { band: i, gain: 0.0 });
+    }
 
     // Establish a Discord voice connection
     this.lavaJS.wsSend({
@@ -92,7 +102,7 @@ export class Player {
 
   /**
    * Whether the player has a loaded track
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   public get playing(): boolean {
     return this.playState;
@@ -100,10 +110,83 @@ export class Player {
 
   /**
    * Whether the player is paused
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   public get paused(): boolean {
     return this.playPaused;
+  }
+
+  /**
+   * Toggle the track or queue repeat feature (No parameter disables both)
+   * @param {"track" | "playlist"} [type] - Whether to repeat the track or queue.
+   * @return {Boolean} state - The new repeat state.
+   */
+  public toggleRepeat(type?: "track" | "queue"): boolean {
+    if (type === "track") {
+      this.repeatTrack = true;
+      this.repeatQueue = false;
+      return this.repeatTrack;
+    } else if (type === "queue") {
+      this.repeatQueue = true;
+      this.repeatTrack = false;
+      return this.repeatQueue;
+    } else {
+      this.repeatQueue = false;
+      this.repeatTrack = false;
+      return false;
+    }
+  }
+
+  /**
+   * Set custom EQ Bands for the player (No parameters resets the bands)
+   * @param {Number} [band] - The band to edit.
+   * @param {Number} [gain] - The new gain for the band.
+   */
+  public EQBands(band?: number, gain?: number): void {
+    if (isNaN(band) || isNaN(gain)) {
+      this.bands.clear();
+      for (let i = 0; i < 15; i++) {
+        this.bands.set(i, { band: i, gain: 0.0 });
+      }
+    } else {
+      if (band > 14 || band < 0)
+        throw new RangeError(
+          `Player#setEQ() The band should be between 0 and 14.`
+        );
+      if (gain > 1 || gain < -0.25)
+        throw new RangeError(
+          `Player#setEQ() The gain should be between -0.25 and 1.`
+        );
+      this.bands.set(band, { band: band, gain: gain });
+    }
+    this.node
+      .wsSend({
+        op: "equalizer",
+        guildId: this.options.guild.id,
+        bands: [...this.bands.values()],
+      })
+      .catch((err) => {
+        if (err) throw new Error(err);
+      });
+  }
+
+  /**
+   * Change the player voice channel
+   * @param {VoiceChannel} channel - The new voice channel.
+   */
+  public movePlayer(channel: VoiceChannel): void {
+    if (!channel)
+      throw new Error(`Player#movePlayer() No voice channel provided!`);
+
+    this.lavaJS.wsSend({
+      op: 4,
+      d: {
+        guild_id: this.options.guild.id,
+        channel_id: channel.id,
+        self_deaf: this.options.deafen || false,
+        self_mute: false,
+      },
+    });
   }
 
   /**
@@ -131,7 +214,7 @@ export class Player {
   /**
    * Search a track or playlist from YouTube
    * @param {String} query - The song or playlist name or link.
-   * @param {*} user - The user who requested the track.
+   * @param {User} user - The user who requested the track.
    * @param {Boolean} [add=false] - Add to the queue automatically if response is a track.
    * @return {Promise<Array<Track>|Playlist>} result - The search data can be single track or playlist or array of tracks.
    */
@@ -334,3 +417,5 @@ export class Player {
     this.lavaJS.emit("destroyPlayer", this);
   }
 }
+
+export { Player };

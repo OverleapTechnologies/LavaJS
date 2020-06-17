@@ -13,4 +13,5 @@ export = {
   Queue,
   newTrack: Utils.newTrack,
   newPlaylist: Utils.newPlaylist,
+  formatTime: Utils.formatTime,
 };

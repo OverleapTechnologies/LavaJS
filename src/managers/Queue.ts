@@ -3,8 +3,9 @@
 import { Track } from "../utils/Interfaces";
 import { Player } from "./Player";
 
-export class Queue extends Array {
+class Queue extends Array {
   public readonly player: Player;
+
   /**
    * Creates a new Queue
    * @param {Player} player - The player to which this queue belongs.
@@ -58,7 +59,7 @@ export class Queue extends Array {
   }
 
   /**
-   * Removes a single track from the queue and returns it
+   * Removes a single track from the queue
    * @param {Number} [pos=0] - The track's position.
    * @return {Track|null} track - The removed track or null.
    */
@@ -68,7 +69,7 @@ export class Queue extends Array {
   }
 
   /**
-   * Removes all tracks in the given range and returns the array
+   * Removes all tracks in the given range
    * @param {Number} [start=0] - The starting point.
    * @param {Number} end - The ending point.
    * @return {Array<Track>} track - The array of tracks.
@@ -95,4 +96,27 @@ export class Queue extends Array {
   public clear(): void {
     this.splice(0);
   }
+
+  /**
+   * Move a track to a new position
+   * @param {Number} from - The original position of the track.
+   * @param {Number} to - The new position.
+   */
+  public moveTrack(from: number, to: number): void {
+    if (!from)
+      throw new RangeError(`Queue#moveTrack() "from" parameter missing.`);
+    if (!to) throw new RangeError(`Queue#moveTrack() "to" parameter missing.`);
+    if (to > this.size)
+      throw new RangeError(
+        `Queue#moveTrack() The new position cannot be greater than ${this.size}.`
+      );
+    const track: Track = this.remove(from);
+    if (!track)
+      throw new RangeError(
+        `Queue#moveTrack() No track found at the given position.`
+      );
+    this.splice(to, 0, track);
+  }
 }
+
+export { Queue };
