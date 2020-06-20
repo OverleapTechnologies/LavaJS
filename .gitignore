@@ -5,3 +5,6 @@ node_modules/
 
 # Ignore these too
 dist/
+
+# no need to version typings (automatically generated)
+typings
