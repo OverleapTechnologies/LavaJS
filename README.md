@@ -71,7 +71,7 @@ bot.log("token");
 ```
 # Bot Examples
 
-* **[Blazify](https://github.com/IamGoDsoIamBest/Blazify-discord-bot) - A Typescript Discord Bot based on the library discord.js. LavaJs is used for music so it will server you as a example on how to use LavaJS**
+* **[Blazify](https://github.com/IamGoDsoIamBest/Blazify-discord-bot) - A TypeScript Discord Bot based on the DiscordJS. LavaJS is used for music so it will serve you as an example.**
 
 # Contributor
 
