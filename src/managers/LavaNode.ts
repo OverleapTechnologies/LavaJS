@@ -192,7 +192,7 @@ class LavaNode {
       const player: Player = this.lavaJS.playerCollection.get(guildId);
       if (!player) return;
       player.playState = false;
-      const track: Track = player.queue[0];
+      const track: Track = player.queue.first;
 
       // Handle track event messages
       switch (type) {

@@ -2,25 +2,19 @@
 
 import { Track } from "../utils/Interfaces";
 import { Player } from "./Player";
+import { Cache } from "../utils/Cache";
 
-class Queue extends Array {
+class Queue extends Cache<number, Track> {
   public readonly player: Player;
 
   /**
    * Creates a new Queue
    * @param {Player} player - The player to which this queue belongs.
+   * @extends Cache
    */
   constructor(player: Player) {
     super();
     this.player = player;
-  }
-
-  /**
-   * Get the number of songs in the queue
-   * @return {Number}
-   */
-  public get size(): number {
-    return this.length;
   }
 
   /**
@@ -36,7 +30,7 @@ class Queue extends Array {
    * @return {Boolean}
    */
   public get empty(): boolean {
-    return !this.length;
+    return !this.size;
   }
 
   /**
@@ -51,30 +45,31 @@ class Queue extends Array {
 
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {
-        this.push(data[i]);
+        this.set(this.size + 1, data[i]);
       }
     } else {
-      this.push(data);
+      this.set(this.size + 1, data);
     }
   }
 
   /**
    * Removes a single track from the queue
-   * @param {Number} [pos=0] - The track's position.
+   * @param {Number} [pos=1] - The track's position.
    * @return {Track|null} track - The removed track or null.
    */
-  public remove(pos: number = 0): Track | null {
-    const track = this.splice(pos, 1)[0];
+  public remove(pos: number = 1): Track | null {
+    const track = this.get(pos);
+    this.delete(pos);
     if (track) return track;
   }
 
   /**
    * Removes all tracks in the given range
-   * @param {Number} [start=0] - The starting point.
+   * @param {Number} start - The starting point.
    * @param {Number} end - The ending point.
    * @return {Array<Track>} track - The array of tracks.
    */
-  public wipe(start: number = 0, end: number): Track[] {
+  public wipe(start: number, end: number): Track[] {
     if (!start) throw new RangeError(`Queue#wipe() "start" parameter missing.`);
     if (!end) throw new RangeError(`Queue#wipe() "end" parameter missing.`);
     if (start >= end)
@@ -86,15 +81,19 @@ class Queue extends Array {
         `Queue#wipe() Start parameter must be smaller than queue length.`
       );
 
-    const trackArr: Track[] = this.splice(start, end);
-    if (trackArr) return trackArr;
+    const trackArr: Track[] = [];
+    for (let i = start; i === end; i++) {
+      trackArr.push(this.get(i));
+      this.delete(i);
+    }
+    return trackArr;
   }
 
   /**
    * Clears the whole queue
    */
-  public clear(): void {
-    this.splice(0);
+  public clearQueue(): void {
+    this.clear();
   }
 
   /**
@@ -110,12 +109,23 @@ class Queue extends Array {
       throw new RangeError(
         `Queue#moveTrack() The new position cannot be greater than ${this.size}.`
       );
-    const track: Track = this.remove(from);
+    if (this.player.playing && (to === 1 || from === 1))
+      throw new Error(
+        `Queue#moveTrack() Cannot change position or replace currently playing track.`
+      );
+
+    const arr = [...this.values()];
+    const track: Track = arr.splice(from - 1, 1)[0];
     if (!track)
       throw new RangeError(
         `Queue#moveTrack() No track found at the given position.`
       );
-    this.splice(to, 0, track);
+
+    arr.splice(to, 0, track);
+    this.clearQueue();
+    for (let i = 0; i < arr.length; i++) {
+      this.set(i + 1, arr[i]);
+    }
   }
 }
 

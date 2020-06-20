@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "watch": true,
     "declaration": true,
-    "declarationDir": "typings"
+    "declarationDir": "./typings/"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

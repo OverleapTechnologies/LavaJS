@@ -1,3 +1,5 @@
+"use strict";
+
 import { User } from "discord.js";
 import { Playlist, Track } from "./Interfaces";
 
