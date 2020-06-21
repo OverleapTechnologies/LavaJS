@@ -1,14 +1,12 @@
 "use strict";
 
 import { EventEmitter } from "events";
-import { LavaNode } from "./LavaNode";
-import { Player } from "./Player";
-import { Cache } from "../utils/Cache";
+import { LavaNode, Player, Cache } from "..";
 import { NodeOptions, PlayerOptions } from "../utils/Interfaces";
 import { VoiceChannel } from "discord.js";
 const states: Map<string, any> = new Map();
 
-class LavaClient extends EventEmitter {
+export class LavaClient extends EventEmitter {
   /**
    * The discord client
    */
@@ -222,5 +220,3 @@ class LavaClient extends EventEmitter {
     }
   }
 }
-
-export { LavaClient };

@@ -3,7 +3,7 @@
 import { User } from "discord.js";
 import { Playlist, Track } from "./Interfaces";
 
-class Utils {
+export class Utils {
   /**
    * Make a new track
    * @param {*} data - The track data from LavaLink.
@@ -85,5 +85,3 @@ class Utils {
     return res.join(":");
   }
 }
-
-export { Utils };

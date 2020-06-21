@@ -3,9 +3,9 @@
 import WebSocket from "ws";
 import { LavaClient } from "./LavaClient";
 import { NodeOptions, NodeStats, Track } from "../utils/Interfaces";
-import { Player } from "./Player";
+import { Player } from "..";
 
-class LavaNode {
+export class LavaNode {
   public readonly lavaJS: LavaClient;
   /**
    * The options for the node
@@ -275,5 +275,3 @@ class LavaNode {
     });
   }
 }
-
-export { LavaNode };

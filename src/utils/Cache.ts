@@ -1,6 +1,6 @@
 "use strict";
 
-class Cache<K, V> extends Map<K, V> {
+export class Cache<K, V> extends Map<K, V> {
   /**
    * Creates a new Cache
    * @extends Map
@@ -73,5 +73,3 @@ class Cache<K, V> extends Map<K, V> {
     );
   }
 }
-
-export { Cache };

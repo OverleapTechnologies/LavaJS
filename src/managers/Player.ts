@@ -1,15 +1,11 @@
 "use strict";
 
-import { Queue } from "./Queue";
-import { LavaClient } from "./LavaClient";
-import { LavaNode } from "./LavaNode";
-import { Utils } from "../utils/Utils";
+import { LavaClient, LavaNode, Queue, Utils, Cache } from "..";
 import fetch from "node-fetch";
 import { PlayerOptions, Playlist, Track } from "../utils/Interfaces";
 import { User, VoiceChannel } from "discord.js";
-import { Cache } from "../utils/Cache";
 
-class Player {
+export class Player {
   /**
    * The LavaClient instance
    */
@@ -419,5 +415,3 @@ class Player {
     this.lavaJS.emit("destroyPlayer", this);
   }
 }
-
-export { Player };
