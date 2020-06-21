@@ -1,5 +1,3 @@
-"use strict";
-
 export class Cache<K, V> extends Map<K, V> {
   /**
    * Creates a new Cache
@@ -32,7 +30,7 @@ export class Cache<K, V> extends Map<K, V> {
    * @param {String} position - Whether to get data from start or end.
    * @return {Array<V>}
    */
-  public getSome(amount: number, position: "start" | "end"): V[] {
+  public getSome(amount: number, position: "start" | "end"): V[] | undefined {
     const arr: V[] = this.toArray();
     if (position === "start") {
       return arr.slice(amount);

@@ -1,9 +1,10 @@
-"use strict";
-
 import { EventEmitter } from "events";
-import { LavaNode, Player, Cache, NodeOptions, PlayerOptions } from "..";
+import { LavaNode } from "./LavaNode";
+import { Player } from "./Player";
+import { Cache } from "../utils/Cache";
+import { NodeOptions, PlayerOptions } from "../utils/Interfaces";
 import { VoiceChannel } from "discord.js";
-const states: Cache<string, any> = new Cache<string, any>();
+const states: Map<string, any> = new Map<string, any>();
 
 export class LavaClient extends EventEmitter {
   /**
@@ -153,7 +154,9 @@ export class LavaClient extends EventEmitter {
         `LavaClient#spawnPlayer() Could not resolve PlayerOptions.textChannel.`
       );
 
-    const oldPlayer: Player = this.playerCollection.get(options.guild.id);
+    const oldPlayer: Player | undefined = this.playerCollection.get(
+      options.guild.id
+    );
     if (oldPlayer) return oldPlayer;
 
     return new Player(this, options, this.optimisedNode);
@@ -183,7 +186,9 @@ export class LavaClient extends EventEmitter {
     if (!["VOICE_STATE_UPDATE", "VOICE_SERVER_UPDATE"].includes(data.t)) return;
     if (data.d.user_id && data.d.user_id !== this.client.user.id) return;
 
-    const player: Player = this.playerCollection.get(data.d.guild_id);
+    const player: Player | undefined = this.playerCollection.get(
+      data.d.guild_id
+    );
     if (!player) return;
     const voiceState: any = states.get(data.d.guild_id) || {};
 

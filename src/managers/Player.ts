@@ -1,16 +1,10 @@
-"use strict";
-
 import fetch from "node-fetch";
-import {
-  LavaClient,
-  LavaNode,
-  Queue,
-  Utils,
-  Cache,
-  PlayerOptions,
-  Playlist,
-  Track,
-} from "..";
+import { LavaClient } from "./LavaClient";
+import { LavaNode } from "./LavaNode";
+import { Queue } from "./Queue";
+import { Utils } from "../utils/Utils";
+import { Cache } from "../utils/Cache";
+import { PlayerOptions, Playlist, Track } from "../utils/Interfaces";
 import { User, VoiceChannel } from "discord.js";
 
 export class Player {
@@ -148,7 +142,7 @@ export class Player {
    * @param {Number} [gain] - The new gain for the band.
    */
   public EQBands(band?: number, gain?: number): void {
-    if (isNaN(band) || isNaN(gain)) {
+    if (!band || isNaN(band) || !gain || isNaN(gain)) {
       this.bands.clear();
       for (let i = 0; i < 15; i++) {
         this.bands.set(i, { band: i, gain: 0.0 });
@@ -265,7 +259,7 @@ export class Player {
           break;
 
         case "SEARCH_RESULT":
-          const res: Track[] = tracks.map((t) => Utils.newTrack(t, user));
+          const res: Track[] = tracks.map((t: any) => Utils.newTrack(t, user));
           resolve(res);
           break;
 

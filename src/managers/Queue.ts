@@ -1,6 +1,6 @@
-"use strict";
-
-import { Player, Cache, Track } from "..";
+import { Player } from "./Player";
+import { Track } from "../utils/Interfaces";
+import { Cache } from "../utils/Cache";
 
 export class Queue extends Cache<number, Track> {
   public readonly player: Player;
@@ -53,12 +53,12 @@ export class Queue extends Cache<number, Track> {
   /**
    * Removes a single track from the queue
    * @param {Number} [pos=1] - The track's position.
-   * @return {Track|null} track - The removed track or null.
+   * @return {Track|undefined} track - The removed track or null.
    */
-  public remove(pos: number = 1): Track | null {
+  public remove(pos: number = 1): Track | undefined {
     const track = this.get(pos);
     this.delete(pos);
-    if (track) return track;
+    return track;
   }
 
   /**
@@ -81,7 +81,8 @@ export class Queue extends Cache<number, Track> {
 
     const trackArr: Track[] = [];
     for (let i = start; i === end; i++) {
-      trackArr.push(this.get(i));
+      const track: Track | undefined = this.get(i);
+      if (track) trackArr.push(track);
       this.delete(i);
     }
     return trackArr;

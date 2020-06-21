@@ -1,5 +1,3 @@
-"use strict";
-
 import { Guild, VoiceChannel, TextChannel, User } from "discord.js";
 
 /**

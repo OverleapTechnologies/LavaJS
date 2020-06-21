@@ -1,7 +1,7 @@
-"use strict";
-
 import WebSocket from "ws";
-import { LavaClient, Player, NodeOptions, NodeStats, Track } from "..";
+import { LavaClient } from "./LavaClient";
+import { Player } from "./Player";
+import { NodeOptions, NodeStats, Track } from "../utils/Interfaces";
 
 export class LavaNode {
   public readonly lavaJS: LavaClient;
@@ -20,11 +20,11 @@ export class LavaNode {
   /**
    * The websocket connection
    */
-  public con: WebSocket;
+  public con!: WebSocket | null;
   /**
    * Handles the reconnect
    */
-  private reconnectModule: NodeJS.Timeout;
+  private reconnectModule: NodeJS.Timeout | undefined;
 
   /**
    * Create new LavaNode class instance
@@ -145,7 +145,7 @@ export class LavaNode {
         );
         return this.kill();
       }
-      this.con.removeAllListeners();
+      this.con!.removeAllListeners();
       this.con = null;
       this.lavaJS.emit("nodeReconnect", this);
       this.connect();
@@ -158,8 +158,8 @@ export class LavaNode {
    */
   public kill(): void {
     if (!this.online) return;
-    this.con.close(1000, "destroy");
-    this.con.removeAllListeners();
+    this.con!.close(1000, "destroy");
+    this.con!.removeAllListeners();
     this.con = null;
     this.lavaJS.nodeCollection.delete(this.options.host);
   }
@@ -181,13 +181,17 @@ export class LavaNode {
           break;
 
         case "playerUpdate":
-          const player: Player = this.lavaJS.playerCollection.get(guildId);
+          const player: Player | undefined = this.lavaJS.playerCollection.get(
+            guildId
+          );
           if (player) player.position = state.position || 0;
           break;
       }
     } else if (op === "event") {
       if (!guildId) return;
-      const player: Player = this.lavaJS.playerCollection.get(guildId);
+      const player: Player | undefined = this.lavaJS.playerCollection.get(
+        guildId
+      );
       if (!player) return;
       player.playState = false;
       const track: Track = player.queue.first;
@@ -204,7 +208,7 @@ export class LavaNode {
           if (track && player.repeatTrack) {
             player.play();
           } else if (track && player.repeatQueue) {
-            const toAdd: Track = player.queue.remove();
+            const toAdd: Track | undefined = player.queue.remove();
             if (toAdd) player.queue.add(toAdd);
             player.play();
           } else if (track && player.queue.size > 1) {
@@ -267,7 +271,7 @@ export class LavaNode {
       if (!formattedData || !formattedData.startsWith("{"))
         rej(`The data was not in the proper format.`);
 
-      this.con.send(formattedData, (err) => {
+      this.con!.send(formattedData, (err) => {
         err ? rej(err) : res(true);
       });
     });
