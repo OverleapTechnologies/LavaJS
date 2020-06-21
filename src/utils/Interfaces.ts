@@ -5,7 +5,7 @@ import { Guild, VoiceChannel, TextChannel, User } from "discord.js";
 /**
  * The track interface
  */
-interface Track {
+export interface Track {
   /**
    * The 64-bit encoded track
    */
@@ -53,7 +53,7 @@ interface Track {
 /**
  * The playlist interface
  */
-interface Playlist {
+export interface Playlist {
   /**
    * Name of the playlist
    */
@@ -75,7 +75,7 @@ interface Playlist {
 /**
  * The options for the node
  */
-interface NodeOptions {
+export interface NodeOptions {
   /**
    * The IP of the host
    */
@@ -93,7 +93,7 @@ interface NodeOptions {
 /**
  * The options for the player
  */
-interface PlayerOptions {
+export interface PlayerOptions {
   /**
    * The guild where the player is connected to
    */
@@ -127,7 +127,7 @@ interface PlayerOptions {
 /**
  * The Node stats interface
  */
-interface NodeStats {
+export interface NodeStats {
   /**
    * The number of players playing
    */
@@ -179,5 +179,3 @@ interface NodeStats {
    */
   uptime: number;
 }
-
-export { Track, Playlist, PlayerOptions, NodeOptions, NodeStats };

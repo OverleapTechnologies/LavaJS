@@ -1,8 +1,16 @@
 "use strict";
 
-import { LavaClient, LavaNode, Queue, Utils, Cache } from "..";
 import fetch from "node-fetch";
-import { PlayerOptions, Playlist, Track } from "../utils/Interfaces";
+import {
+  LavaClient,
+  LavaNode,
+  Queue,
+  Utils,
+  Cache,
+  PlayerOptions,
+  Playlist,
+  Track,
+} from "..";
 import { User, VoiceChannel } from "discord.js";
 
 export class Player {
@@ -25,7 +33,7 @@ export class Player {
   /**
    * The band collection
    */
-  public readonly bands: Map<number, { band: number; gain: number }>;
+  public readonly bands: Cache<number, { band: number; gain: number }>;
   /**
    * Whether the player has a loaded track
    */
@@ -75,7 +83,7 @@ export class Player {
     this.skipOnError = options.skipOnError || false;
 
     this.queue = new Queue(this);
-    this.bands = new Cache();
+    this.bands = new Cache<number, { band: number; gain: number }>();
 
     // Set the bands default
     for (let i = 0; i < 15; i++) {

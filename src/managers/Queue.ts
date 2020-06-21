@@ -1,7 +1,6 @@
 "use strict";
 
-import { Track } from "../utils/Interfaces";
-import { Player, Cache } from "..";
+import { Player, Cache, Track } from "..";
 
 export class Queue extends Cache<number, Track> {
   public readonly player: Player;

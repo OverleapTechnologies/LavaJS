@@ -1,9 +1,7 @@
 "use strict";
 
 import WebSocket from "ws";
-import { LavaClient } from "./LavaClient";
-import { NodeOptions, NodeStats, Track } from "../utils/Interfaces";
-import { Player } from "..";
+import { LavaClient, Player, NodeOptions, NodeStats, Track } from "..";
 
 export class LavaNode {
   public readonly lavaJS: LavaClient;

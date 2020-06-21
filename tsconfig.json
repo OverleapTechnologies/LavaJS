@@ -6,10 +6,9 @@
     "rootDir": "./src/",
     "lib": ["es6"],
     "esModuleInterop": true,
-    "watch": true,
-    "declaration": true,
-    "declarationDir": "./typings/"
+    "watch": true
   },
+  "files": ["./typings/index.d.ts"],
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
