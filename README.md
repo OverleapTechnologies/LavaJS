@@ -69,6 +69,9 @@ const lavaClient = new LavaClient(bot, nodes);
 // Login the discord client
 bot.log("token");
 ```
+# Bot Examples
+
+* **[Blazify](https://github.com/IamGoDsoIamBest/Blazify-discord-bot) - A TypeScript Discord Bot based on the DiscordJS. LavaJS is used for music so it will serve you as an example.**
 
 # Contributor
 
