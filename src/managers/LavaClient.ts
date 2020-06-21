@@ -60,6 +60,11 @@ export class LavaClient extends EventEmitter {
    * @param {Player} player - The destroyed player.
    */
   /**
+   * Emitted when a queue ends
+   * @event LavaClient#queueOver
+   * @param {Player} player - Player whose queue ended.
+   */
+  /**
    * Emitted when a track ends
    * @event LavaClient#trackOver
    * @param {Track} track - The track which ended.
@@ -84,11 +89,6 @@ export class LavaClient extends EventEmitter {
    * @param {Track} track - Track which encountered errored.
    * @param {Player} player - Player which was playing the track.
    * @param {Error} error - The error message.
-   */
-  /**
-   * Emitted when a queue ends
-   * @event LavaClient#queueOver
-   * @param {Player} player - Player whose queue ended.
    */
 
   /**
