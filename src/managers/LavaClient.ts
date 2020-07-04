@@ -2,9 +2,9 @@ import { EventEmitter } from "events";
 import { LavaNode } from "./LavaNode";
 import { Player } from "./Player";
 import { Cache } from "../utils/Cache";
-import { NodeOptions, PlayerOptions } from "../utils/Interfaces";
+import { NodeOptions, PlayerOptions, QueueOptions } from "../utils/Interfaces";
 import { VoiceChannel } from "discord.js";
-const states: Map<string, any> = new Map<string, any>();
+const states = new Map<string, any>();
 
 export class LavaClient extends EventEmitter {
   /**
@@ -122,52 +122,11 @@ export class LavaClient extends EventEmitter {
   }
 
   /**
-   * Send data to Discord via WebSocket.
-   * @param {*} data - The data packet to send.
-   */
-  public wsSend(data: any): void {
-    if (!this.client) return;
-    const guild = this.client.guilds.cache.get(data.d.guild_id);
-    if (guild && this.shards > 1) {
-      guild.shard.send(data);
-    } else if (guild) {
-      this.client.ws.shards.get(0).send(data);
-    }
-  }
-
-  /**
-   * Creates a new LavaJS player or returns old one if player exists
-   * @param {PlayerOptions} options - The player options.
-   * @return {Player} player - The new player.
-   */
-  public spawnPlayer(options: PlayerOptions): Player {
-    if (!options.guild)
-      throw new Error(
-        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.guild.`
-      );
-    if (!options.voiceChannel)
-      throw new Error(
-        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.voiceChannel.`
-      );
-    if (!options.textChannel)
-      throw new Error(
-        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.textChannel.`
-      );
-
-    const oldPlayer: Player | undefined = this.playerCollection.get(
-      options.guild.id
-    );
-    if (oldPlayer) return oldPlayer;
-
-    return new Player(this, options, this.optimisedNode);
-  }
-
-  /**
    * Returns the node with least resource usage
    * @return {LavaNode}
    */
   public get optimisedNode(): LavaNode {
-    const sorted: LavaNode[] = this.nodeCollection
+    const sorted = this.nodeCollection
       .toArray()
       .filter((x) => x.online)
       .sort((a, b) => {
@@ -179,6 +138,46 @@ export class LavaClient extends EventEmitter {
   }
 
   /**
+   * Send data to Discord via WebSocket.
+   * @param {*} data - The data packet to send.
+   */
+  public wsSend(data: any): void {
+    if (!this.client) return;
+    const guild = this.client.guilds.cache.get(data.d.guild_id);
+    if (this.shards > 1) {
+      guild!.shard.send(data);
+    } else if (guild) {
+      this.client.ws.shards.get(0).send(data);
+    }
+  }
+
+  /**
+   * Creates a new LavaJS player or returns old one if player exists
+   * @param {PlayerOptions} options - The player options.
+   * @param {QueueOptions} queue - The queue options.
+   * @return {Player} player - The new player.
+   */
+  public spawnPlayer(options: PlayerOptions, queue: QueueOptions): Player {
+    if (!options.guild)
+      throw new TypeError(
+        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.guild.`
+      );
+    if (!options.voiceChannel)
+      throw new TypeError(
+        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.voiceChannel.`
+      );
+    if (!options.textChannel)
+      throw new TypeError(
+        `LavaClient#spawnPlayer() Could not resolve PlayerOptions.textChannel.`
+      );
+
+    const oldPlayer = this.playerCollection.get(options.guild.id);
+    if (oldPlayer) return oldPlayer;
+
+    return new Player(this, options, queue, this.optimisedNode);
+  }
+
+  /**
    * Handles discord's voice state updates
    * @param {*} data - The data packet from discord
    */
@@ -186,11 +185,9 @@ export class LavaClient extends EventEmitter {
     if (!["VOICE_STATE_UPDATE", "VOICE_SERVER_UPDATE"].includes(data.t)) return;
     if (data.d.user_id && data.d.user_id !== this.client.user.id) return;
 
-    const player: Player | undefined = this.playerCollection.get(
-      data.d.guild_id
-    );
+    const player = this.playerCollection.get(data.d.guild_id);
     if (!player) return;
-    const voiceState: any = states.get(data.d.guild_id) || {};
+    const voiceState = states.get(data.d.guild_id) || {};
 
     switch (data.t) {
       case "VOICE_STATE_UPDATE":
@@ -198,9 +195,9 @@ export class LavaClient extends EventEmitter {
         voiceState.sessionId = data.d.session_id;
 
         if (player.options.voiceChannel.id !== data.d.channel_id) {
-          const newChannel: VoiceChannel = this.client.channels.cache.get(
+          const newChannel = this.client.channels.cache.get(
             data.d.channel_id
-          );
+          ) as VoiceChannel;
           if (newChannel) player.options.voiceChannel = newChannel;
         }
         break;

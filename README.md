@@ -30,12 +30,13 @@ npm install @anonymousg/lavajs
 **You need the following things before you can kick off with LavaJS:**
 
 - [**Java Installed**](https://www.java.com/en/download/)
-- [**LavaLink CL Server**](https://github.com/Frederikam/Lavalink/releases)
+- [**LavaLink CL Server**](https://ci.fredboat.com/viewLog.html?buildId=lastSuccessful&buildTypeId=Lavalink_Build&tab=artifacts&guest=1)
 
 > The setup has been covered in our official documentation. Do check it out if you have any doubts.
 
 # Documentation and Support
 
+- **The latest changelog can be found [here](https://lavajs.tech/#/changelog).**
 - **Our official documentation is available [here](https://lavajs.tech).**
 - **For any further query and support join us at [Projects.Me](https://discord.gg/mHHU8vs) discord.**
 
@@ -60,6 +61,7 @@ const nodes = [
     host: "localhost",
     port: 2333,
     password: "mypassword",
+    retries: 5,
   },
 ];
 
@@ -69,9 +71,11 @@ const lavaClient = new LavaClient(bot, nodes);
 // Login the discord client
 bot.log("token");
 ```
+
 # Bot Examples
 
-* **[Blazify](https://github.com/IamGoDsoIamBest/Blazify-discord-bot) - A TypeScript Discord Bot based on the DiscordJS. LavaJS is used for music so it will serve you as an example.**
+- **[Official Bot](https://github.com/Projects-Me/LavaJS/tree/bot) - The official example bot from LavaJS team.**
+- **[Blazify](https://github.com/IamGoDsoIamBest/Blazify-discord-bot) - A TypeScript Discord Bot based on the DiscordJS. LavaJS is used for music so it will serve you as an example.**
 
 # Contributor
 

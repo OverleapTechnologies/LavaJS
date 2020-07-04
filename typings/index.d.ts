@@ -55,6 +55,11 @@ declare module "@anonymousg/lavajs" {
     public readonly shards: number;
     public readonly nodeCollection: Cache<string, LavaNode>;
     public readonly playerCollection: Cache<string, Player>;
+
+    public get optimisedNode(): LavaNode;
+
+    public wsSend(data: any): void;
+    public spawnPlayer(options: PlayerOptions, queue: QueueOptions): Player;
   }
 
   export class LavaNode {
@@ -75,33 +80,34 @@ declare module "@anonymousg/lavajs" {
   }
 
   export class Player {
-    constructor(lavaJS: LavaClient, options: PlayerOptions, node?: LavaNode);
+    constructor(
+      lavaJS: LavaClient,
+      options: PlayerOptions,
+      queue: QueueOptions,
+      node?: LavaNode
+    );
 
     public readonly lavaJS: LavaClient;
     public readonly options: PlayerOptions;
     public readonly node: LavaNode;
     public readonly queue: Queue;
-    public readonly bands: Cache<number, { band: number; gain: number }>;
+    public readonly bands: Array<{ band: number; gain: number }>;
 
     public playState: boolean;
     public position: number;
-    public volume: number;
     public playPaused: boolean;
-    public repeatTrack: boolean;
-    public repeatQueue: boolean;
-    public skipOnError: boolean;
+    public volume: number;
 
     public get paused(): boolean;
     public get playing(): boolean;
 
-    public toggleRepeat(type?: "track" | "queue"): boolean;
-    public EQBands(band?: number, gain?: number): void;
+    public EQBands(data?: { band: number; gain: number }[]): void;
     public movePlayer(channel: VoiceChannel): void;
     public play(): void;
     public lavaSearch(
       query: string,
       user: User,
-      add?: boolean
+      options: { source?: "yt" | "sc"; add?: boolean }
     ): Promise<Track[] | Playlist>;
     public stop(): void;
     public pause(): void;
@@ -112,15 +118,20 @@ declare module "@anonymousg/lavajs" {
   }
 
   export class Queue extends Cache<number, Track> {
-    constructor(player: Player);
+    constructor(player: Player, options: QueueOptions);
 
     public readonly player: Player;
+
+    public repeatTrack: boolean;
+    public repeatQueue: boolean;
+    public skipOnError: boolean;
 
     public get duration(): number;
     public get empty(): boolean;
 
+    public toggleRepeat(type?: "track" | "queue"): boolean;
     public add(data: Track | Track[]): void;
-    public remove(pos?: number): Track | null;
+    public remove(pos?: number): Track | undefined;
     public wipe(start: number, end: number): Track[];
     public clearQueue(): void;
     public moveTrack(from: number, to: number): void;
@@ -130,7 +141,9 @@ declare module "@anonymousg/lavajs" {
     constructor();
 
     public get first(): V;
+    public get firstKey(): K;
     public get last(): V;
+    public get lastKey(): K;
 
     public getSome(amount: number, position: "start" | "end"): V[];
     public toArray(): V[];
@@ -173,16 +186,21 @@ declare module "@anonymousg/lavajs" {
     readonly host: string;
     readonly port: number;
     readonly password: string;
+    readonly retries?: number;
   }
 
   export interface PlayerOptions {
     readonly guild: Guild;
     readonly voiceChannel: VoiceChannel;
     readonly textChannel: TextChannel;
+    readonly volume?: number;
     readonly deafen?: boolean;
-    readonly trackRepeat?: boolean;
-    readonly queueRepeat?: boolean;
-    readonly skipOnError?: boolean;
+  }
+
+  export interface QueueOptions {
+    trackRepeat?: boolean;
+    queueRepeat?: boolean;
+    skipOnError?: boolean;
   }
 
   export interface NodeStats {

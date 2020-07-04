@@ -1,18 +1,36 @@
 import { Player } from "./Player";
-import { Track } from "../utils/Interfaces";
+import { QueueOptions, Track } from "../utils/Interfaces";
 import { Cache } from "../utils/Cache";
 
 export class Queue extends Cache<number, Track> {
   public readonly player: Player;
 
   /**
+   * Whether to repeat the current track
+   */
+  public repeatTrack: boolean;
+  /**
+   * Whether to repeat the queue
+   */
+  public repeatQueue: boolean;
+  /**
+   * Whether to skip the song on a track error
+   */
+  public skipOnError: boolean;
+
+  /**
    * Creates a new Queue
    * @param {Player} player - The player to which this queue belongs.
+   * @param {QueueOptions} options - The options for queue.
    * @extends Cache
    */
-  constructor(player: Player) {
+  constructor(player: Player, options: QueueOptions) {
     super();
     this.player = player;
+
+    this.repeatTrack = options.trackRepeat || false;
+    this.repeatQueue = options.queueRepeat || false;
+    this.skipOnError = options.skipOnError || false;
   }
 
   /**
@@ -32,39 +50,60 @@ export class Queue extends Cache<number, Track> {
   }
 
   /**
+   * Toggle the track or queue repeat feature (No parameter disables both)
+   * @param {"track" | "playlist"} [type] - Whether to repeat the track or queue.
+   * @return {Boolean} state - The new repeat state.
+   */
+  public toggleRepeat(type?: "track" | "queue"): boolean {
+    if (type === "track") {
+      this.repeatTrack = true;
+      this.repeatQueue = false;
+      return this.repeatTrack;
+    } else if (type === "queue") {
+      this.repeatQueue = true;
+      this.repeatTrack = false;
+      return this.repeatQueue;
+    } else {
+      this.repeatQueue = false;
+      this.repeatTrack = false;
+      return false;
+    }
+  }
+
+  /**
    * Add a track or playlist to the queue
    * @param {Track|Array<Track>} data - The track or playlist data.
    */
   public add(data: Track | Track[]): void {
     if (!data)
-      throw new Error(
+      throw new TypeError(
         `Queue#add() Provided argument is not of type "Track" or "Track[]".`
       );
 
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {
-        this.set(this.size + 1, data[i]);
+        this.set(this.lastKey + 1, data[i]);
       }
     } else {
-      this.set(this.size + 1, data);
+      this.set(this.lastKey + 1, data);
     }
   }
 
   /**
    * Removes a single track from the queue
-   * @param {Number} [pos=1] - The track's position.
+   * @param {Number} [pos=0] - The track's position.
    * @return {Track|undefined} track - The removed track or null.
    */
-  public remove(pos: number = 1): Track | undefined {
-    const track = this.get(pos);
-    this.delete(pos);
-    return track;
+  public remove(pos?: number): Track | undefined {
+    const track = this.KVArray()[pos || 0];
+    this.delete(track[0]);
+    return track[1];
   }
 
   /**
    * Removes all tracks in the given range
-   * @param {Number} start - The starting point.
-   * @param {Number} end - The ending point.
+   * @param {Number} start - The starting key.
+   * @param {Number} end - The ending key.
    * @return {Array<Track>} track - The array of tracks.
    */
   public wipe(start: number, end: number): Track[] {
@@ -81,8 +120,8 @@ export class Queue extends Cache<number, Track> {
 
     const trackArr: Track[] = [];
     for (let i = start; i === end; i++) {
-      const track: Track | undefined = this.get(i);
-      if (track) trackArr.push(track);
+      const track = this.get(i);
+      trackArr.push(track!);
       this.delete(i);
     }
     return trackArr;
@@ -108,13 +147,13 @@ export class Queue extends Cache<number, Track> {
       throw new RangeError(
         `Queue#moveTrack() The new position cannot be greater than ${this.size}.`
       );
-    if (this.player.playing && (to === 1 || from === 1))
+    if (this.player.playing && (to === 0 || from === 0))
       throw new Error(
         `Queue#moveTrack() Cannot change position or replace currently playing track.`
       );
 
     const arr = [...this.values()];
-    const track: Track = arr.splice(from - 1, 1)[0];
+    const track = arr.splice(from, 1)[0];
     if (!track)
       throw new RangeError(
         `Queue#moveTrack() No track found at the given position.`

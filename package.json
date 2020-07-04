@@ -1,6 +1,6 @@
 {
   "name": "@anonymousg/lavajs",
-  "version": "3.2.6",
+  "version": "3.3.0",
   "description": "Dynamic LavaLink wrapper for your discord bot",
   "main": "./dist/index.js",
   "types": "./typings/index.d.ts",
@@ -9,12 +9,13 @@
     "url": "https://github.com/Projects-Me/LavaJS.git"
   },
   "keywords": [
-    "Lavalink",
-    "DiscordJS",
-    "Discord",
-    "Music",
-    "LavaJS",
-    "MusicBot"
+    "lavalink",
+    "discord.js",
+    "discord",
+    "music",
+    "lavajs",
+    "bot",
+    "lavaplayer"
   ],
   "author": "AnonymousG",
   "license": "MIT",

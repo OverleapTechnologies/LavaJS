@@ -16,12 +16,29 @@ export class Cache<K, V> extends Map<K, V> {
   }
 
   /**
+   * Get the first key
+   * @return {K}
+   */
+  public get firstKey(): K {
+    return this.keys().next().value;
+  }
+
+  /**
    * Get the last entry
    * @return {V}
    */
   public get last(): V {
-    const arr: V[] = this.toArray();
+    const arr = this.toArray();
     return arr[arr.length - 1];
+  }
+
+  /**
+   * Get the last entry
+   * @return {K}
+   */
+  public get lastKey(): K {
+    const arr = this.KVArray();
+    return arr[arr.length - 1][0];
   }
 
   /**
@@ -31,7 +48,7 @@ export class Cache<K, V> extends Map<K, V> {
    * @return {Array<V>}
    */
   public getSome(amount: number, position: "start" | "end"): V[] | undefined {
-    const arr: V[] = this.toArray();
+    const arr = this.toArray();
     if (position === "start") {
       return arr.slice(amount);
     } else if (position === "end") {
@@ -61,11 +78,11 @@ export class Cache<K, V> extends Map<K, V> {
    * @return {Array<T>}
    */
   public map<T>(func: (value: V, key: K) => T): T[] {
-    const mapIter: IterableIterator<[K, V]> = this.entries();
+    const mapIter = this.entries();
     return Array.from(
       { length: this.size },
       (): T => {
-        const [key, val]: [K, V] = mapIter.next().value;
+        const [key, val] = mapIter.next().value;
         return func(val, key);
       }
     );

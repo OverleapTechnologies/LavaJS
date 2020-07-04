@@ -1,7 +1,6 @@
 import WebSocket from "ws";
 import { LavaClient } from "./LavaClient";
-import { Player } from "./Player";
-import { NodeOptions, NodeStats, Track } from "../utils/Interfaces";
+import { NodeOptions, NodeStats } from "../utils/Interfaces";
 
 export class LavaNode {
   public readonly lavaJS: LavaClient;
@@ -20,11 +19,11 @@ export class LavaNode {
   /**
    * The websocket connection
    */
-  public con!: WebSocket | null;
+  public con?: WebSocket | null;
   /**
    * Handles the reconnect
    */
-  private reconnectModule: NodeJS.Timeout | undefined;
+  private reconnectModule?: NodeJS.Timeout;
 
   /**
    * Create new LavaNode class instance
@@ -54,7 +53,7 @@ export class LavaNode {
 
     this.conStatus = {
       attempts: 0,
-      doRetry: 5,
+      doRetry: options.retries || 5,
     };
 
     this.connect();
@@ -83,26 +82,26 @@ export class LavaNode {
    * Establish a node websocket connection
    */
   public connect(): void {
-    const headers: any = {
+    const headers = {
       Authorization: this.options.password,
       "Num-Shards": this.lavaJS.shards,
       "User-Id": this.lavaJS.client.user.id,
     };
-    this.con = new WebSocket(
+    this.con! = new WebSocket(
       `ws://${this.options.host}:${this.options.port}/`,
       { headers }
     );
-    this.con.on("open", this.onConnect.bind(this));
-    this.con.on("error", this.onError.bind(this));
-    this.con.on("close", this.onClose.bind(this));
-    this.con.on("message", this.handleResponse.bind(this));
+    this.con!.on("open", this.onConnect.bind(this));
+    this.con!.on("error", this.onError.bind(this));
+    this.con!.on("close", this.onClose.bind(this));
+    this.con!.on("message", this.handleResponse.bind(this));
   }
 
   /**
    * Handles successful connections
    */
   private onConnect(): void {
-    if (this.reconnectModule) clearTimeout(this.reconnectModule);
+    clearTimeout(this.reconnectModule!);
     this.lavaJS.emit("nodeSuccess", this);
   }
 
@@ -168,7 +167,7 @@ export class LavaNode {
    * Handle any incoming data from the node
    */
   private handleResponse(data: any): void {
-    const msg: any = JSON.parse(data.toString());
+    const msg = JSON.parse(data.toString());
     const { op, type, code, guildId, state } = msg;
     if (!op) return;
 
@@ -181,20 +180,15 @@ export class LavaNode {
           break;
 
         case "playerUpdate":
-          const player: Player | undefined = this.lavaJS.playerCollection.get(
-            guildId
-          );
+          const player = this.lavaJS.playerCollection.get(guildId);
           if (player) player.position = state.position || 0;
           break;
       }
     } else if (op === "event") {
-      if (!guildId) return;
-      const player: Player | undefined = this.lavaJS.playerCollection.get(
-        guildId
-      );
+      const player = this.lavaJS.playerCollection.get(guildId);
       if (!player) return;
       player.playState = false;
-      const track: Track = player.queue.first;
+      const track = player.queue.first;
 
       // Handle track event messages
       switch (type) {
@@ -205,10 +199,10 @@ export class LavaNode {
 
         case "TrackEndEvent":
           if (!track) return;
-          if (track && player.repeatTrack) {
+          if (track && player.queue.repeatTrack) {
             player.play();
-          } else if (track && player.repeatQueue) {
-            const toAdd: Track | undefined = player.queue.remove();
+          } else if (track && player.queue.repeatQueue) {
+            const toAdd = player.queue.remove();
             if (toAdd) player.queue.add(toAdd);
             player.play();
           } else if (track && player.queue.size > 1) {
@@ -223,14 +217,14 @@ export class LavaNode {
         case "TrackStuckEvent":
           if (!track) return;
           player.queue.remove();
-          if (player.skipOnError) player.play();
+          if (player.queue.skipOnError) player.play();
           this.lavaJS.emit("trackStuck", track, player, msg);
           break;
 
         case "TrackExceptionEvent":
           if (!track) return;
           player.queue.remove();
-          if (player.skipOnError) player.play();
+          if (player.queue.skipOnError) player.play();
           this.lavaJS.emit("trackError", track, player, msg);
           break;
 
@@ -267,7 +261,7 @@ export class LavaNode {
     return new Promise((res, rej) => {
       if (!this.online) res(false);
 
-      const formattedData: string = JSON.stringify(data);
+      const formattedData = JSON.stringify(data);
       if (!formattedData || !formattedData.startsWith("{"))
         rej(`The data was not in the proper format.`);
 

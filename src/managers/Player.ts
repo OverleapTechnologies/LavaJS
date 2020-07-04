@@ -4,7 +4,12 @@ import { LavaNode } from "./LavaNode";
 import { Queue } from "./Queue";
 import { Utils } from "../utils/Utils";
 import { Cache } from "../utils/Cache";
-import { PlayerOptions, Playlist, Track } from "../utils/Interfaces";
+import {
+  PlayerOptions,
+  Playlist,
+  QueueOptions,
+  Track,
+} from "../utils/Interfaces";
 import { User, VoiceChannel } from "discord.js";
 
 export class Player {
@@ -27,7 +32,7 @@ export class Player {
   /**
    * The band collection
    */
-  public readonly bands: Cache<number, { band: number; gain: number }>;
+  public readonly bands: Array<{ band: number; gain: number }>;
   /**
    * Whether the player has a loaded track
    */
@@ -35,53 +40,41 @@ export class Player {
   /**
    * The position of the track
    */
-  public position: number;
+  public position: number = 0;
   /**
    * The player volume
    */
   public volume: number;
   /**
-   * Whether to repeat the current track
-   */
-  public repeatTrack: boolean;
-  /**
-   * Whether to repeat the queue
-   */
-  public repeatQueue: boolean;
-  /**
-   * Whether to skip the song on a track error
-   */
-  public skipOnError: boolean;
-  /**
    * Whether the player is paused
    */
-  public playPaused: boolean;
+  public playPaused: boolean = false;
 
   /**
    * The player class which plays the music
    * @param {LavaClient} lavaJS - The LavaClient.
    * @param {PlayerOptions} options - The player options.
+   * @param {QueueOptions} queueOptions - The queue options.
    * @param {LavaNode} [node=optimisedNode] - The node to use.
    */
-  constructor(lavaJS: LavaClient, options: PlayerOptions, node?: LavaNode) {
+  constructor(
+    lavaJS: LavaClient,
+    options: PlayerOptions,
+    queueOptions: QueueOptions,
+    node?: LavaNode
+  ) {
     this.lavaJS = lavaJS;
     this.options = options;
     this.node = node || this.lavaJS.optimisedNode;
 
-    this.playState = false;
-    this.position = 0;
-    this.volume = 100;
-    this.playPaused = false;
-    this.repeatTrack = options.trackRepeat || false;
-    this.repeatQueue = options.queueRepeat || false;
-    this.skipOnError = options.skipOnError || false;
+    this.volume = options.volume || 100;
 
-    this.queue = new Queue(this);
-    this.bands = new Cache<number, { band: number; gain: number }>();
+    this.queue = new Queue(this, queueOptions);
+    this.bands = new Array<{ band: number; gain: number }>();
 
     // Set the bands default
     for (let i = 0; i < 15; i++) {
-      this.bands.set(i, { band: i, gain: 0.0 });
+      this.bands.push({ band: i, gain: 0.0 });
     }
 
     // Establish a Discord voice connection
@@ -116,53 +109,35 @@ export class Player {
   }
 
   /**
-   * Toggle the track or queue repeat feature (No parameter disables both)
-   * @param {"track" | "playlist"} [type] - Whether to repeat the track or queue.
-   * @return {Boolean} state - The new repeat state.
-   */
-  public toggleRepeat(type?: "track" | "queue"): boolean {
-    if (type === "track") {
-      this.repeatTrack = true;
-      this.repeatQueue = false;
-      return this.repeatTrack;
-    } else if (type === "queue") {
-      this.repeatQueue = true;
-      this.repeatTrack = false;
-      return this.repeatQueue;
-    } else {
-      this.repeatQueue = false;
-      this.repeatTrack = false;
-      return false;
-    }
-  }
-
-  /**
    * Set custom EQ Bands for the player (No parameters resets the bands)
-   * @param {Number} [band] - The band to edit.
-   * @param {Number} [gain] - The new gain for the band.
+   * @param {Array} [data] - The new band values.
    */
-  public EQBands(band?: number, gain?: number): void {
-    if (!band || isNaN(band) || !gain || isNaN(gain)) {
-      this.bands.clear();
+  public EQBands(data?: { band: number; gain: number }[]): void {
+    if (!data) {
+      this.bands.splice(0);
       for (let i = 0; i < 15; i++) {
-        this.bands.set(i, { band: i, gain: 0.0 });
+        this.bands.push({ band: i, gain: 0.0 });
       }
     } else {
-      if (band > 14 || band < 0)
-        throw new RangeError(
-          `Player#setEQ() The band should be between 0 and 14.`
-        );
-      if (gain > 1 || gain < -0.25)
-        throw new RangeError(
-          `Player#setEQ() The gain should be between -0.25 and 1.`
-        );
-      this.bands.set(band, { band: band, gain: gain });
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].band > 14 || data[i].band < 0)
+          throw new RangeError(
+            `Player#setEQ() The band should be between 0 and 14.`
+          );
+        if (data[i].gain > 1 || data[i].gain < -0.25)
+          throw new RangeError(
+            `Player#setEQ() The gain should be between -0.25 and 1.`
+          );
+        const old = this.bands.find((x) => x.band === data[i].band);
+        this.bands.splice(this.bands.indexOf(old!), 1);
+        this.bands.push(data[i]);
+      }
     }
     this.node
       .wsSend({
         op: "equalizer",
         guildId: this.options.guild.id,
-        bands: [...this.bands.values()],
+        bands: this.bands,
       })
       .catch((err) => {
         if (err) throw new Error(err);
@@ -198,7 +173,7 @@ export class Player {
       return this.stop();
     }
 
-    const track: Track = this.queue.first;
+    const track = this.queue.first;
     this.node
       .wsSend({
         op: "play",
@@ -215,18 +190,18 @@ export class Player {
    * Search a track or playlist from YouTube
    * @param {String} query - The song or playlist name or link.
    * @param {User} user - The user who requested the track.
-   * @param {Boolean} [add=false] - Add to the queue automatically if response is a track.
+   * @param {{ source: "yt" | "sc", add: boolean }} [options=] - Extra params for the queue.
    * @return {Promise<Array<Track>|Playlist>} result - The search data can be single track or playlist or array of tracks.
    */
   public lavaSearch(
     query: string,
     user: User,
-    add: boolean = false
+    options: { source?: "yt" | "sc"; add?: boolean }
   ): Promise<Track[] | Playlist> {
     return new Promise(async (resolve, reject) => {
-      const search: string = new RegExp(/^https?:\/\//g).test(query)
+      const search = new RegExp(/^https?:\/\//g).test(query)
         ? query
-        : `ytsearch:${query}`;
+        : `${options.source || "yt"}search:${query}`;
 
       const { loadType, playlistInfo, tracks, exception } = await (
         await fetch(
@@ -241,25 +216,25 @@ export class Player {
         // Successful loading
         case "TRACK_LOADED":
           const arr: Track[] = [];
-          const trackData: Track = Utils.newTrack(tracks[0], user);
+          const trackData = Utils.newTrack(tracks[0], user);
           arr.push(trackData);
-          if (!add) return resolve(arr);
+          if (options.add === true) return resolve(arr);
           this.queue.add(trackData);
           resolve(arr);
           break;
 
         case "PLAYLIST_LOADED":
-          const data: any = {
+          const data = {
             name: playlistInfo.name,
             trackCount: tracks.length,
             tracks: tracks,
           };
-          const playlist: Playlist = Utils.newPlaylist(data, user);
+          const playlist = Utils.newPlaylist(data, user);
           resolve(playlist);
           break;
 
         case "SEARCH_RESULT":
-          const res: Track[] = tracks.map((t: any) => Utils.newTrack(t, user));
+          const res = tracks.map((t: any) => Utils.newTrack(t, user));
           resolve(res);
           break;
 

@@ -15,13 +15,15 @@ export class Utils {
 
     Object.assign(trackData, data.info);
     trackData.trackString = data.track;
-    trackData.thumbnail = {
-      default: `https://img.youtube.com/vi/${data.info.identifier}/default.jpg`,
-      medium: `https://img.youtube.com/vi/${data.info.identifier}/mqdefault.jpg`,
-      high: `https://img.youtube.com/vi/${data.info.identifier}/hqdefault.jpg`,
-      standard: `https://img.youtube.com/vi/${data.info.identifier}/sddefault.jpg`,
-      max: `https://img.youtube.com/vi/${data.info.identifier}/maxresdefault.jpg`,
-    };
+    trackData.thumbnail = trackData.uri.includes("youtube")
+      ? {
+          default: `https://img.youtube.com/vi/${data.info.identifier}/default.jpg`,
+          medium: `https://img.youtube.com/vi/${data.info.identifier}/mqdefault.jpg`,
+          high: `https://img.youtube.com/vi/${data.info.identifier}/hqdefault.jpg`,
+          standard: `https://img.youtube.com/vi/${data.info.identifier}/sddefault.jpg`,
+          max: `https://img.youtube.com/vi/${data.info.identifier}/maxresdefault.jpg`,
+        }
+      : {};
     trackData.user = user;
     return trackData;
   }

@@ -86,6 +86,10 @@ export interface NodeOptions {
    * The authorization password
    */
   password: string;
+  /**
+   * Amount of retries on connection error
+   */
+  retries?: number;
 }
 
 /**
@@ -105,9 +109,19 @@ export interface PlayerOptions {
    */
   textChannel: TextChannel;
   /**
+   * Set the player's volume upon joining
+   */
+  volume?: number;
+  /**
    * Whether to deafen the bot on joining
    */
   deafen?: boolean;
+}
+
+/**
+ * The options for the queue
+ */
+export interface QueueOptions {
   /**
    * Whether to repeat the current track
    */
