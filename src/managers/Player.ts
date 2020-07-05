@@ -3,7 +3,6 @@ import { LavaClient } from "./LavaClient";
 import { LavaNode } from "./LavaNode";
 import { Queue } from "./Queue";
 import { Utils } from "../utils/Utils";
-import { Cache } from "../utils/Cache";
 import {
   PlayerOptions,
   Playlist,
@@ -54,13 +53,13 @@ export class Player {
    * The player class which plays the music
    * @param {LavaClient} lavaJS - The LavaClient.
    * @param {PlayerOptions} options - The player options.
-   * @param {QueueOptions} queueOptions - The queue options.
+   * @param {QueueOptions} [queueOptions] - The queue options.
    * @param {LavaNode} [node=optimisedNode] - The node to use.
    */
   constructor(
     lavaJS: LavaClient,
     options: PlayerOptions,
-    queueOptions: QueueOptions,
+    queueOptions?: QueueOptions,
     node?: LavaNode
   ) {
     this.lavaJS = lavaJS;
@@ -69,7 +68,7 @@ export class Player {
 
     this.volume = options.volume || 100;
 
-    this.queue = new Queue(this, queueOptions);
+    this.queue = new Queue(this, queueOptions!);
     this.bands = new Array<{ band: number; gain: number }>();
 
     // Set the bands default
@@ -190,7 +189,7 @@ export class Player {
    * Search a track or playlist from YouTube
    * @param {String} query - The song or playlist name or link.
    * @param {User} user - The user who requested the track.
-   * @param {{ source: "yt" | "sc", add: boolean }} [options=] - Extra params for the queue.
+   * @param {{ source: "yt" | "sc", add: boolean }} [options] - Extra params for the queue.
    * @return {Promise<Array<Track>|Playlist>} result - The search data can be single track or playlist or array of tracks.
    */
   public lavaSearch(

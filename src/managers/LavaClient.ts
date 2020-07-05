@@ -154,10 +154,10 @@ export class LavaClient extends EventEmitter {
   /**
    * Creates a new LavaJS player or returns old one if player exists
    * @param {PlayerOptions} options - The player options.
-   * @param {QueueOptions} queue - The queue options.
+   * @param {QueueOptions} [queue] - The queue options.
    * @return {Player} player - The new player.
    */
-  public spawnPlayer(options: PlayerOptions, queue: QueueOptions): Player {
+  public spawnPlayer(options: PlayerOptions, queue?: QueueOptions): Player {
     if (!options.guild)
       throw new TypeError(
         `LavaClient#spawnPlayer() Could not resolve PlayerOptions.guild.`
@@ -174,7 +174,7 @@ export class LavaClient extends EventEmitter {
     const oldPlayer = this.playerCollection.get(options.guild.id);
     if (oldPlayer) return oldPlayer;
 
-    return new Player(this, options, queue, this.optimisedNode);
+    return new Player(this, options, queue!);
   }
 
   /**

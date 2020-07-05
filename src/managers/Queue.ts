@@ -4,7 +4,6 @@ import { Cache } from "../utils/Cache";
 
 export class Queue extends Cache<number, Track> {
   public readonly player: Player;
-
   /**
    * Whether to repeat the current track
    */
@@ -21,16 +20,16 @@ export class Queue extends Cache<number, Track> {
   /**
    * Creates a new Queue
    * @param {Player} player - The player to which this queue belongs.
-   * @param {QueueOptions} options - The options for queue.
+   * @param {QueueOptions} [options] - The options for queue.
    * @extends Cache
    */
-  constructor(player: Player, options: QueueOptions) {
+  constructor(player: Player, options?: QueueOptions) {
     super();
     this.player = player;
 
-    this.repeatTrack = options.trackRepeat || false;
-    this.repeatQueue = options.queueRepeat || false;
-    this.skipOnError = options.skipOnError || false;
+    this.repeatTrack = options!.repeatTrack || false;
+    this.repeatQueue = options!.repeatQueue || false;
+    this.skipOnError = options!.skipOnError || false;
   }
 
   /**
@@ -82,10 +81,10 @@ export class Queue extends Cache<number, Track> {
 
     if (Array.isArray(data)) {
       for (let i = 0; i < data.length; i++) {
-        this.set(this.lastKey + 1, data[i]);
+        this.set((this.size < 1 ? 0 : this.lastKey) + 1, data[i]);
       }
     } else {
-      this.set(this.lastKey + 1, data);
+      this.set((this.size < 1 ? 0 : this.lastKey) + 1, data);
     }
   }
 

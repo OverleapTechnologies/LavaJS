@@ -125,11 +125,11 @@ export interface QueueOptions {
   /**
    * Whether to repeat the current track
    */
-  trackRepeat?: boolean;
+  repeatTrack?: boolean;
   /**
    * Whether to repeat the queue
    */
-  queueRepeat?: boolean;
+  repeatQueue?: boolean;
   /**
    * Whether to skip song on a track error
    */

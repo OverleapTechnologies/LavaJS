@@ -59,7 +59,7 @@ declare module "@anonymousg/lavajs" {
     public get optimisedNode(): LavaNode;
 
     public wsSend(data: any): void;
-    public spawnPlayer(options: PlayerOptions, queue: QueueOptions): Player;
+    public spawnPlayer(options: PlayerOptions, queue?: QueueOptions): Player;
   }
 
   export class LavaNode {
@@ -83,7 +83,7 @@ declare module "@anonymousg/lavajs" {
     constructor(
       lavaJS: LavaClient,
       options: PlayerOptions,
-      queue: QueueOptions,
+      queue?: QueueOptions,
       node?: LavaNode
     );
 
@@ -118,7 +118,7 @@ declare module "@anonymousg/lavajs" {
   }
 
   export class Queue extends Cache<number, Track> {
-    constructor(player: Player, options: QueueOptions);
+    constructor(player: Player, options?: QueueOptions);
 
     public readonly player: Player;
 
@@ -198,8 +198,8 @@ declare module "@anonymousg/lavajs" {
   }
 
   export interface QueueOptions {
-    trackRepeat?: boolean;
-    queueRepeat?: boolean;
+    repeatTrack?: boolean;
+    repeatQueue?: boolean;
     skipOnError?: boolean;
   }
 
