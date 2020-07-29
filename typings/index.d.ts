@@ -1,6 +1,6 @@
 declare module "@anonymousg/lavajs" {
   import { EventEmitter } from "events";
-  import { Guild, VoiceChannel, TextChannel, User } from "discord.js";
+  import { Guild, VoiceChannel, TextChannel, GuildMember } from "discord.js";
   import WebSocket from "ws";
 
   export const version: string;
@@ -59,7 +59,10 @@ declare module "@anonymousg/lavajs" {
     public get optimisedNode(): LavaNode;
 
     public wsSend(data: any): void;
-    public spawnPlayer(options: PlayerOptions, queue?: QueueOptions): Player;
+    public spawnPlayer(
+      options: PlayerOptions,
+      queueOption?: QueueOptions
+    ): Player;
   }
 
   export class LavaNode {
@@ -83,7 +86,7 @@ declare module "@anonymousg/lavajs" {
     constructor(
       lavaJS: LavaClient,
       options: PlayerOptions,
-      queue?: QueueOptions,
+      queueOption?: QueueOptions,
       node?: LavaNode
     );
 
@@ -106,7 +109,7 @@ declare module "@anonymousg/lavajs" {
     public play(): void;
     public lavaSearch(
       query: string,
-      user: User,
+      user: GuildMember,
       options: { source?: "yt" | "sc"; add?: boolean }
     ): Promise<Track[] | Playlist>;
     public stop(): void;
@@ -152,8 +155,8 @@ declare module "@anonymousg/lavajs" {
   }
 
   export class Utils {
-    public static newTrack(data: any, user: User): Track;
-    public static newPlaylist(data: any, user: User): Playlist;
+    public static newTrack(data: any, user: GuildMember): Track;
+    public static newPlaylist(data: any, user: GuildMember): Playlist;
     public static formatTime(ms: number): string;
   }
 
@@ -165,7 +168,7 @@ declare module "@anonymousg/lavajs" {
     readonly length: number;
     readonly isStream: boolean;
     readonly uri: string;
-    readonly user: User;
+    readonly user: GuildMember;
     readonly thumbnail: {
       readonly default: string;
       readonly medium: string;

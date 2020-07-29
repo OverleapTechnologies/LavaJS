@@ -1,14 +1,14 @@
-import { User } from "discord.js";
+import { GuildMember } from "discord.js";
 import { Playlist, Track } from "./Interfaces";
 
 export class Utils {
   /**
    * Make a new track
    * @param {*} data - The track data from LavaLink.
-   * @param {User} user - The user to requested the track.
+   * @param {GuildMember} user - The user to requested the track.
    * @return {Track}
    */
-  public static newTrack(data: any, user: User): Track {
+  public static newTrack(data: any, user: GuildMember): Track {
     const trackData: any = {};
     if (!data.info || !data.track)
       throw new Error(`newTrack() The "data" must be a LavaLink track.`);
@@ -31,10 +31,10 @@ export class Utils {
   /**
    * Make a new playlist
    * @param {*} data - The playlist data from LavaLink.
-   * @param {User} user - The user to requested the playlist.
+   * @param {GuildMember} user - The user to requested the playlist.
    * @return {Playlist}
    */
-  public static newPlaylist(data: any, user: User): Playlist {
+  public static newPlaylist(data: any, user: GuildMember): Playlist {
     const { name, trackCount, tracks: trackArray } = data;
     if (!(name || trackCount || trackArray || Array.isArray(trackArray)))
       throw new Error(`newPlaylist() The "data" must be LavaLink playlist.`);

@@ -23,13 +23,13 @@ export class Queue extends Cache<number, Track> {
    * @param {QueueOptions} [options] - The options for queue.
    * @extends Cache
    */
-  constructor(player: Player, options?: QueueOptions) {
+  constructor(player: Player, options: QueueOptions = {}) {
     super();
     this.player = player;
 
-    this.repeatTrack = options!.repeatTrack || false;
-    this.repeatQueue = options!.repeatQueue || false;
-    this.skipOnError = options!.skipOnError || false;
+    this.repeatTrack = options.repeatTrack || false;
+    this.repeatQueue = options.repeatQueue || false;
+    this.skipOnError = options.skipOnError || false;
   }
 
   /**
@@ -91,7 +91,7 @@ export class Queue extends Cache<number, Track> {
   /**
    * Removes a single track from the queue
    * @param {Number} [pos=0] - The track's position.
-   * @return {Track|undefined} track - The removed track or null.
+   * @return {Track|undefined} track - The removed track.
    */
   public remove(pos?: number): Track | undefined {
     const track = this.KVArray()[pos || 0];
@@ -117,20 +117,23 @@ export class Queue extends Cache<number, Track> {
         `Queue#wipe() Start parameter must be smaller than queue length.`
       );
 
-    const trackArr: Track[] = [];
+    const bucket: Track[] = [];
+    const trackArr = this.KVArray();
     for (let i = start; i === end; i++) {
-      const track = this.get(i);
-      trackArr.push(track!);
-      this.delete(i);
+      const track = trackArr[i];
+      bucket.push(track[1]);
+      this.delete(track[0]);
     }
-    return trackArr;
+    return bucket;
   }
 
   /**
-   * Clears the whole queue
+   * Clears the whole queue except current song
    */
   public clearQueue(): void {
+    let curr = this.first;
     this.clear();
+    if (curr) this.set(1, curr);
   }
 
   /**

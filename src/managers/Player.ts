@@ -9,7 +9,7 @@ import {
   QueueOptions,
   Track,
 } from "../utils/Interfaces";
-import { User, VoiceChannel } from "discord.js";
+import { GuildMember, VoiceChannel } from "discord.js";
 
 export class Player {
   /**
@@ -53,13 +53,13 @@ export class Player {
    * The player class which plays the music
    * @param {LavaClient} lavaJS - The LavaClient.
    * @param {PlayerOptions} options - The player options.
-   * @param {QueueOptions} [queueOptions] - The queue options.
+   * @param {QueueOptions} [queueOption] - The queue options.
    * @param {LavaNode} [node=optimisedNode] - The node to use.
    */
   constructor(
     lavaJS: LavaClient,
     options: PlayerOptions,
-    queueOptions?: QueueOptions,
+    queueOption?: QueueOptions,
     node?: LavaNode
   ) {
     this.lavaJS = lavaJS;
@@ -68,7 +68,7 @@ export class Player {
 
     this.volume = options.volume || 100;
 
-    this.queue = new Queue(this, queueOptions!);
+    this.queue = new Queue(this, queueOption ? queueOption : {});
     this.bands = new Array<{ band: number; gain: number }>();
 
     // Set the bands default
@@ -188,13 +188,13 @@ export class Player {
   /**
    * Search a track or playlist from YouTube
    * @param {String} query - The song or playlist name or link.
-   * @param {User} user - The user who requested the track.
+   * @param {GuildMember} user - The user who requested the track.
    * @param {{ source: "yt" | "sc", add: boolean }} [options] - Extra params for the queue.
    * @return {Promise<Array<Track>|Playlist>} result - The search data can be single track or playlist or array of tracks.
    */
   public lavaSearch(
     query: string,
-    user: User,
+    user: GuildMember,
     options: { source?: "yt" | "sc"; add?: boolean }
   ): Promise<Track[] | Playlist> {
     return new Promise(async (resolve, reject) => {
