@@ -60,24 +60,28 @@ export class Utils {
    * @return {String} time - The formatted timestamp
    */
   public static formatTime(ms: number): string {
-    let s: number, m: number, h: number, d: number;
-    s = Math.floor(ms / 1000);
-    m = Math.floor(s / 60);
-    s = s % 60;
-    h = Math.floor(m / 60);
-    m = m % 60;
-    d = Math.floor(h / 24);
-    h = h % 24;
+    const time = {
+      d: 0,
+      h: 0,
+      m: 0,
+      s: 0,
+    };
+    time.s = Math.floor(ms / 1000);
+    time.m = Math.floor(time.s / 60);
+    time.s = time.s % 60;
+    time.h = Math.floor(time.m / 60);
+    time.m = time.m % 60;
+    time.d = Math.floor(time.h / 24);
+    time.h = time.h % 24;
 
-    const arr: Array<number> = [s, m, h, d];
-    const res: Array<string> = [];
-    for (const v of arr) {
+    const res = [];
+    for (const [k, v] of Object.entries(time)) {
       let first = false;
       if (v < 1 && !first) continue;
+
       res.push(v < 10 ? `0${v}` : `${v}`);
       first = true;
     }
-
     return res.join(":");
   }
 }
