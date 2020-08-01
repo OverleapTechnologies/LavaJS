@@ -198,6 +198,8 @@ export class Player {
     options: { source?: "yt" | "sc"; add?: boolean }
   ): Promise<Track[] | Playlist> {
     return new Promise(async (resolve, reject) => {
+      query = encodeURI(query)
+      
       const search = new RegExp(/^https?:\/\//g).test(query)
         ? query
         : `${options.source || "yt"}search:${query}`;
