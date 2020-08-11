@@ -223,4 +223,13 @@ export class LavaClient extends EventEmitter {
         });
     }
   }
+  
+  public connect(node: NodeOptions) {
+      if(!node || !node.host) throw new Error("[ClientError] No nodes provided!");
+    
+      const newNode = new LavaNode(this, node);
+      this.nodeCollection.set(node.host, newNode);
+    
+      return newNode
+  }
 }
