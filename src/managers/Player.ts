@@ -199,7 +199,7 @@ export class Player {
   ): Promise<Track[] | Playlist> {
     return new Promise(async (resolve, reject) => {
       const search = new RegExp(/^https?:\/\//g).test(query)
-        ? query
+        ? encodeURI(query)
         : `${options.source || "yt"}search:${query}`;
 
       const { loadType, playlistInfo, tracks, exception } = await (
