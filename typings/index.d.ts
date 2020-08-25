@@ -59,6 +59,7 @@ declare module "@anonymousg/lavajs" {
     public get optimisedNode(): LavaNode;
 
     public wsSend(data: any): void;
+    public connect(nodeOptions: NodeOptions): LavaNode;
     public spawnPlayer(
       options: PlayerOptions,
       queueOption?: QueueOptions

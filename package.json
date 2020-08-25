@@ -1,6 +1,6 @@
 {
   "name": "@anonymousg/lavajs",
-  "version": "3.4.2",
+  "version": "3.5.0",
   "description": "Dynamic LavaLink wrapper for your discord bot",
   "main": "./dist/index.js",
   "types": "./typings/index.d.ts",
@@ -24,13 +24,13 @@
   },
   "homepage": "https://github.com/Projects-Me/LavaJS#readme",
   "dependencies": {
-    "events": "^3.1.0",
+    "events": "^3.2.0",
     "node-fetch": "^2.6.0",
-    "ws": "^7.3.0"
+    "ws": "^7.3.1"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.5.7",
-    "@types/ws": "^7.2.5",
-    "discord.js": "^12.2.0"
+    "@types/ws": "^7.2.6",
+    "discord.js": "^12.3.1"
   }
 }

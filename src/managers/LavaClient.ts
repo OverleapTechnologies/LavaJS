@@ -152,6 +152,21 @@ export class LavaClient extends EventEmitter {
   }
 
   /**
+   * Spawn a new LavaNode and connect to it.
+   * @param {NodeOptions} nodeOptions - Options for the new node.
+   * @return {LavaNode} node - The new node.
+   */
+  public connect(nodeOptions: NodeOptions): LavaNode {
+    if (!nodeOptions || !nodeOptions.host)
+      throw new Error("[ClientError] No nodes provided!");
+
+    const newNode = new LavaNode(this, nodeOptions);
+    this.nodeCollection.set(nodeOptions.host, newNode);
+
+    return newNode;
+  }
+
+  /**
    * Creates a new LavaJS player or returns old one if player exists
    * @param {PlayerOptions} options - The player options.
    * @param {QueueOptions} [queueOption] - The queue options.
@@ -222,14 +237,5 @@ export class LavaClient extends EventEmitter {
           if (err) throw new Error(err);
         });
     }
-  }
-  
-  public connect(node: NodeOptions) {
-      if(!node || !node.host) throw new Error("[ClientError] No nodes provided!");
-    
-      const newNode = new LavaNode(this, node);
-      this.nodeCollection.set(node.host, newNode);
-    
-      return newNode
   }
 }

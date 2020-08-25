@@ -11,10 +11,6 @@
     <a href="https://david-dm.org/Projects-Me/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a>
     <a href="https://twitter.com/ThatAnonyG"><img src="https://img.shields.io/twitter/follow/ThatAnonyG?label=Follow&style=social" alt="Twitter" /></a>
   </p>
-  <br />
-  <p>
-    <a href="https://nodei.co/npm/@anonymousg/lavajs/"><img src="https://nodei.co/npm/@anonymousg/lavajs.png?downloads=true&stars=true" alt="Status Banner"></a>
-  </p>
 </div>
 
 # Installation
