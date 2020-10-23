@@ -144,7 +144,7 @@ export class LavaClient extends EventEmitter {
   public wsSend(data: any): void {
     if (!this.client) return;
     const guild = this.client.guilds.cache.get(data.d.guild_id);
-    if (this.shards > 1) {
+    if (this.client.shard.count > 1) {
       guild!.shard.send(data);
     } else if (guild) {
       this.client.ws.shards.get(0).send(data);
