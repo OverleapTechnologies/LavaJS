@@ -6,6 +6,8 @@
     "rootDir": "./src/",
     "lib": ["es6", "ESNext"],
     "incremental": true,
+    "declaration": true,
+    "declarationDir": "./typings/",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
@@ -17,7 +19,6 @@
     "esModuleInterop": true,
     "watch": true
   },
-  "files": ["./typings/index.d.ts"],
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

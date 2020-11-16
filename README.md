@@ -9,7 +9,6 @@
     <a href="https://github.com/ThatAnonymousG/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@anonymousg/lavajs" alt="License" /></a>
     <a href="https://npmjs.com/package/@anonymousg/lavajs"><img src="https://img.shields.io/npm/dt/@anonymousg/lavajs" alt="Downloads" /></a>
     <a href="https://david-dm.org/Projects-Me/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a>
-    <a href="https://twitter.com/ThatAnonyG"><img src="https://img.shields.io/twitter/follow/ThatAnonyG?label=Follow&style=social" alt="Twitter" /></a>
   </p>
 </div>
 
@@ -32,14 +31,14 @@ npm install @anonymousg/lavajs
 
 # Documentation and Support
 
-- **The latest changelog can be found [here](https://lavajs.tech/#/changelog).**
-- **Our official documentation is available [here](https://lavajs.tech).**
-- **For any further query and support join us at [Projects.Me](https://discord.gg/mHHU8vs) discord.**
+- The latest changelog can be found [here](https://lavajs.tech/#/changelog).
+- Our official documentation is available [here](https://lavajs.tech).
+- For any further query and support join us at [Overleap](https://discord.gg/mHHU8vs) discord.
 
 # Basic Startup Guide
 
-- **Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://lavajs.tech/#/setup?id=setup-lavalink) in it.**
-- **Run the `Lavalink.jar` file in a terminal window using `java -jar Lavalink.jar`.**
+- Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://lavajs.tech/#/setup?id=setup-lavalink) in it.
+- Run the `Lavalink.jar` file in a terminal window using `java -jar Lavalink.jar`.
 
 **Example code for running the client:**
 
@@ -53,12 +52,12 @@ const bot = new Client();
 
 // Create the node options
 const nodes = [
-  {
-    host: "localhost",
-    port: 2333,
-    password: "mypassword",
-    retries: 5,
-  },
+	{
+		host: "localhost",
+		port: 2333,
+		password: "mypassword",
+		retries: 5,
+	},
 ];
 
 // New LavaClient instance
@@ -70,15 +69,14 @@ bot.log("token");
 
 # Bot Examples
 
-- **[Official Bot](https://github.com/Projects-Me/LavaJS/tree/bot) - The official example bot from LavaJS team.**
-- **[Blazify](https://github.com/IamGoDsoIamBest/Blazify-discord-bot) - A TypeScript Discord Bot based on the DiscordJS. LavaJS is used for music so it will serve you as an example.**
-
-# Contributor
-
-**Thanks to [Johna-3212](https://github.com/Johna-3212) for making the module compatible with TypeScript!**
+- [Official Bot](https://github.com/Projects-Me/LavaJS/tree/bot) - The official example bot from LavaJS team.
 
 # Author
 
 - **ThatAnonymousG (Ratul Saha)**
-- **Links: [GitHub](https://github.com/ThatAnonymousG) | [Twitter](https://twitter.com/ThatAnonyG) | [DscBio](https://dsc.bio/ThatAnonyG)**
+- **Links:**
+  - [Portfolio](https://thatanonymous.me)
+  - [GitHub](https://github.com/ThatAnonymousG)
+  - [Twitter](https://twitter.com/ThatAnonyG)
+  - [DscBio](https://dsc.bio/ThatAnonyG)
 - [**Donate The Development**](https://paypal.me/ratul003)
