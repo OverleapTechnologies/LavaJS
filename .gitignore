@@ -6,3 +6,4 @@ node_modules/
 # Ignore these too
 dist/
 tsconfig.tsbuildinfo
+typings/

@@ -6,7 +6,7 @@
 	"types": "./typings/index.d.ts",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Projects-Me/LavaJS.git"
+		"url": "https://github.com/OverleapCo/LavaJS.git"
 	},
 	"keywords": [
 		"lavalink",
@@ -20,9 +20,9 @@
 	"author": "AnonymousG",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Projects-Me/LavaJS/issues"
+		"url": "https://github.com/OverleapCo/LavaJS/issues"
 	},
-	"homepage": "https://github.com/Projects-Me/LavaJS#readme",
+	"homepage": "https://github.com/OverleapCo/LavaJS#readme",
 	"dependencies": {
 		"discord.js": "^12.3.1",
 		"events": "^3.2.0",
