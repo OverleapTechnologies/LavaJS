@@ -1,23 +1,29 @@
 <div align="center">
   <br />
   <p>
-    <img src="https://media.discordapp.net/attachments/718368456709505046/718741833378955304/Lava.png" alt="LavaJS Logo" />
+    <img src="https://cdn.discordapp.com/attachments/939789362156163102/950796900938969119/Lava.png" alt="LavaJS Logo" />
   </p>
   <br />
   <p>
-    <a href="https://discord.gg/mHHU8vs"><img src="https://discordapp.com/api/guilds/718157763821174884/widget.png?style=shield" alt="Discord" /></a>
-    <a href="https://github.com/ThatAnonymousG/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@anonymousg/lavajs" alt="License" /></a>
-    <a href="https://npmjs.com/package/@anonymousg/lavajs"><img src="https://img.shields.io/npm/dt/@anonymousg/lavajs" alt="Downloads" /></a>
-    <a href="https://david-dm.org/Projects-Me/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a>
+    <a href="https://discord.gg/PmZBWBu89Y"><img src="https://discordapp.com/api/guilds/939268500302737480/widget.png?style=shield" alt="Discord" /></a>
+    <a href="https://github.com/OverleapTechnologies/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@overleap/lavajs" alt="License" /></a>
+    <a href="https://npmjs.com/package/@overleap/lavajs"><img src="https://img.shields.io/npm/dt/@overleap/lavajs" alt="Downloads" /></a>
+<!--     <a href="https://david-dm.org/Projects-Me/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a> -->
   </p>
 </div>
 
 # Installation
 
-**Using the Node Package Manager (NPM)**
+- Using Node Package Manager (NPM):
 
-```shell script
-npm install @anonymousg/lavajs
+```sh
+npm install @overleap/lavajs
+```
+
+- Or using Yarn:
+
+```sh
+yarn add @overleap/lavajs
 ```
 
 # Important
@@ -31,13 +37,13 @@ npm install @anonymousg/lavajs
 
 # Documentation and Support
 
-- The latest changelog can be found [here](https://lavajs.tech/#/changelog).
-- Our official documentation is available [here](https://lavajs.tech).
-- For any further query and support join us at [Overleap](https://discord.gg/mHHU8vs) discord.
+- The latest changelog can be found [here](https://ratulsaha.me/projects/lavajs/changelog).
+- Our official documentation is available [here](https://ratulsaha.me/projects/lavajs).
+- For any further query and support join us at [Overleap](https://discord.gg/PmZBWBu89Y) discord.
 
 # Basic Startup Guide
 
-- Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://lavajs.tech/#/setup?id=setup-lavalink) in it.
+- Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://ratulsaha.me/projects/lavajs/docs#setup) in it.
 - Run the `Lavalink.jar` file in a terminal window using `java -jar Lavalink.jar`.
 
 **Example code for running the client:**
@@ -45,7 +51,7 @@ npm install @anonymousg/lavajs
 ```js
 // Require Discord and LavaJS clients
 const { Client } = require("discord.js");
-const { LavaClient } = require("@anonymousg/lavajs");
+const { LavaClient } = require("@overleap/lavajs");
 
 // New discord client instance
 const bot = new Client();
@@ -69,14 +75,14 @@ bot.log("token");
 
 # Bot Examples
 
-- [Official Bot](https://github.com/Projects-Me/LavaJS/tree/bot) - The official example bot from LavaJS team.
+- TODO
 
 # Author
 
-- **ThatAnonymousG (Ratul Saha)**
+- **ThatAnonyG (Ratul Saha)**
 - **Links:**
-  - [Portfolio](https://thatanonymous.me)
-  - [GitHub](https://github.com/ThatAnonymousG)
+  - [Portfolio](https://ratulsaha.me)
+  - [GitHub](https://github.com/ThatAnonyG)
   - [Twitter](https://twitter.com/ThatAnonyG)
   - [DscBio](https://dsc.bio/ThatAnonyG)
-- [**Donate The Development**](https://paypal.me/ratul003)
+- [**Donate The Development**](https://paypal.me/thatratul)
