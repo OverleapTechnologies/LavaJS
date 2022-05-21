@@ -8,7 +8,6 @@
     <a href="https://discord.gg/PmZBWBu89Y"><img src="https://discordapp.com/api/guilds/939268500302737480/widget.png?style=shield" alt="Discord" /></a>
     <a href="https://github.com/OverleapTechnologies/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@overleap/lavajs" alt="License" /></a>
     <a href="https://npmjs.com/package/@overleap/lavajs"><img src="https://img.shields.io/npm/dt/@overleap/lavajs" alt="Downloads" /></a>
-<!--     <a href="https://david-dm.org/Projects-Me/LavaJS"><img src="https://img.shields.io/david/Projects-Me/LavaJS" alt="Dependencies" /></a> -->
   </p>
 </div>
 
@@ -48,30 +47,7 @@ yarn add @overleap/lavajs
 
 **Example code for running the client:**
 
-```js
-// Require Discord and LavaJS clients
-const { Client } = require("discord.js");
-const { LavaClient } = require("@overleap/lavajs");
-
-// New discord client instance
-const bot = new Client();
-
-// Create the node options
-const nodes = [
-	{
-		host: "localhost",
-		port: 2333,
-		password: "mypassword",
-		retries: 5,
-	},
-];
-
-// New LavaClient instance
-const lavaClient = new LavaClient(bot, nodes);
-
-// Login the discord client
-bot.log("token");
-```
+- TODO
 
 # Bot Examples
 
@@ -84,5 +60,4 @@ bot.log("token");
   - [Portfolio](https://ratulsaha.me)
   - [GitHub](https://github.com/ThatAnonyG)
   - [Twitter](https://twitter.com/ThatAnonyG)
-  - [DscBio](https://dsc.bio/ThatAnonyG)
 - [**Donate The Development**](https://paypal.me/thatratul)
