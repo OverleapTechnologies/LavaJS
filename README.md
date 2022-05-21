@@ -45,9 +45,34 @@ yarn add @overleap/lavajs
 - Create an `application.yml` file in the `Lavalink.jar` directory and paste this [example](https://ratulsaha.me/projects/lavajs/docs#setup) in it.
 - Run the `Lavalink.jar` file in a terminal window using `java -jar Lavalink.jar`.
 
+# IMPORTANT
+
+- You need to have access to the incoming VOICE_SERVER_UPDATE and VOICE_STATE_UPDATE packets.
+  - Check out the official Discord documention here: [Voice Server Update](https://discord.com/developers/docs/topics/gateway#voice-server-update), [Voice State Update](https://discord.com/developers/docs/resources/voice#voice-state-object).
+  - Refer to the support for your respective library.
+- You need to pass the data to `Client#sendVoiceUpdate(payload)`.
+
 **Example code for running the client:**
 
-- TODO
+```js
+const client = new Client(
+	{
+		botId: "BOT_ID",
+		send: (guildId, payload) => {
+			// A Promise method implementation to pass payload to Discord
+		},
+	},
+	[
+		{
+			host: "localhost",
+			port: 2333,
+			password: "your_server_password",
+		},
+	]
+);
+
+client.connectAll();
+```
 
 # Bot Examples
 
