@@ -1,9 +1,11 @@
 # NPM trash
-package-lock.json
 node_modules/
+
+# Config and dots
 .idea/
+.vscode/
 
 # Ignore these too
 dist/
-tsconfig.tsbuildinfo
 typings/
+test.js

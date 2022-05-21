@@ -1,8 +1,8 @@
 {
 	"name": "@overleap/lavajs",
 	"private": false,
-	"version": "1.0.0",
-	"description": "Dynamic LavaLink wrapper for your discord bot",
+	"version": "2.0.0",
+	"description": "A dynamic LavaLink wrapper for your discord bot",
 	"main": "./dist/index.js",
 	"types": "./typings/index.d.ts",
 	"repository": {
@@ -25,16 +25,17 @@
 	},
 	"homepage": "https://github.com/OverleapTechnologies/LavaJS#readme",
 	"dependencies": {
-		"discord.js": "^12.3.1",
 		"events": "^3.2.0",
-		"node-fetch": "^2.6.0",
+		"node-fetch": "2.6.7",
 		"ws": "^7.3.1"
 	},
 	"devDependencies": {
-		"@types/node-fetch": "^2.5.7",
-		"@types/ws": "^7.2.6"
+		"@types/ws": "^7.2.6",
+		"@typescript-eslint/eslint-plugin": "^5.25.0",
+		"@typescript-eslint/parser": "^5.25.0",
+		"eslint": "^8.16.0"
 	},
 	"publishConfig": {
-		"tag": "legacy"
+		"tag": "beta"
 	}
 }
