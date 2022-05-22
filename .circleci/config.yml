@@ -35,7 +35,10 @@ jobs:
 workflows:
   build_and_publish:
     jobs:
-      - build_and_test
+      - build_and_test:
+          filters:
+            tags:
+              only: /^v[0-9](\.[0-9]){0,2}(-beta(\.[0-9]+)?)?$/
       - publish:
           requires:
             - build_and_test

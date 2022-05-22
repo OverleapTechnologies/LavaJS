@@ -5,9 +5,13 @@
   </p>
   <br />
   <p>
-    <a href="https://discord.gg/PmZBWBu89Y"><img src="https://discordapp.com/api/guilds/939268500302737480/widget.png?style=shield" alt="Discord" /></a>
-    <a href="https://github.com/OverleapTechnologies/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@overleap/lavajs" alt="License" /></a>
-    <a href="https://npmjs.com/package/@overleap/lavajs"><img src="https://img.shields.io/npm/dt/@overleap/lavajs" alt="Downloads" /></a>
+    <a href="https://discord.gg/PmZBWBu89Y"><img src="https://img.shields.io/discord/939268500302737480?color=%235865F2&label=Discord&style=for-the-badge" alt="Discord" /></a>
+    <a href="https://circleci.com/gh/OverleapTechnologies/LavaJS/?branch=dev"><img src="https://img.shields.io/circleci/build/gh/OverleapTechnologies/LavaJS?label=master&style=for-the-badge" alt="CI Status" /></a>
+    <a href="https://circleci.com/gh/OverleapTechnologies/LavaJS/?branch=dev"><img src="https://img.shields.io/circleci/build/gh/OverleapTechnologies/LavaJS/dev?label=dev&style=for-the-badge" alt="CI Status" /></a>
+    <a href="https://github.com/OverleapTechnologies/LavaJS/issues"><img src="https://img.shields.io/github/issues/OverleapTechnologies/LavaJS?color=%232C2F33&style=for-the-badge" alt="GitHub Issues" /></a>
+    <a href="https://github.com/OverleapTechnologies/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@overleap/lavajs?style=for-the-badge" alt="License" /></a>
+    <a href="https://npmjs.com/package/@overleap/lavajs"><img src="https://img.shields.io/npm/dt/@overleap/lavajs?style=for-the-badge" alt="Downloads" /></a>
+
   </p>
 </div>
 
