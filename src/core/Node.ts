@@ -11,6 +11,7 @@ import {
 import { IVoiceUpdatePayload, Payload } from "../types/payload";
 import { Player } from "../components/Player";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pjson = require("../../package.json");
 
 const _ws = Symbol("Node#_ws");

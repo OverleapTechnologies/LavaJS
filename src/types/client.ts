@@ -19,16 +19,17 @@ export interface IDiscordVoiceResumePacket {
 	};
 }
 
+export interface IDiscordVoiceStateUpdateEventPayload {
+	user_id: `${bigint}`;
+	channel_id: `${bigint}` | null;
+	session_id: string;
+}
+
 export interface IDiscordVoiceEvent {
-	t: "VOICE_SERVER_UPDATE" | "VOICE_STATE_UPDATE";
-	d: (
-		| {
-				user_id: `${bigint}`;
-				channel_id: `${bigint}` | null;
-				session_id: string;
-		  }
-		| IVoiceServerUpdateEvent
-	) & { guild_id: `${bigint}` };
+	t: "VOICE_STATE_UPDATE" | "VOICE_SERVER_UPDATE";
+	d: (IDiscordVoiceStateUpdateEventPayload | IVoiceServerUpdateEvent) & {
+		guild_id: `${bigint}`;
+	};
 }
 
 export type DiscordWsSend = (

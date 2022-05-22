@@ -1,0 +1,46 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.2
+
+jobs:
+  build_and_test:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Run tests
+          command: yarn test
+      - run:
+          name: Build dist
+          command: yarn build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+  publish:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/.npmrc
+      - run:
+          name: Publish package
+          command: npm publish
+
+workflows:
+  build_and_publish:
+    jobs:
+      - build_and_test
+      - publish:
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9](\.[0-9]){0,2}(-beta(\.[0-9]+)?)?$/
