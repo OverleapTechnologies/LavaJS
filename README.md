@@ -11,7 +11,6 @@
     <a href="https://github.com/OverleapTechnologies/LavaJS/issues"><img src="https://img.shields.io/github/issues/OverleapTechnologies/LavaJS?color=%232C2F33&style=for-the-badge" alt="GitHub Issues" /></a>
     <a href="https://github.com/OverleapTechnologies/LavaJS/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@overleap/lavajs?style=for-the-badge" alt="License" /></a>
     <a href="https://npmjs.com/package/@overleap/lavajs"><img src="https://img.shields.io/npm/dt/@overleap/lavajs?style=for-the-badge" alt="Downloads" /></a>
-
   </p>
 </div>
 

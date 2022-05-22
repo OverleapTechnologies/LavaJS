@@ -1,17 +1,13 @@
-package-lock.json
-yarn.lock
-.npmignore
-node_modules
+# Ignore all
+*
 
-.gitignore
-.github
-.idea
-.vscode
+# Main source
+!dist/**/*
 
-tsconfig.json
-.eslintrc.js
-.eslintignore
-test.js
+# TS declarations
+!typings/**/*
 
-__tests__
-src
+# Other package files
+!package.json
+!LICENSE
+!README.md
